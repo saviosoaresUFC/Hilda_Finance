@@ -6,6 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './src/navigators/TabNavigator';
 import useLoadFonts from './src/hooks/useLoadFonts';
+// import Toast from 'react-native-toast-message';
 
 const Stack = createNativeStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -22,6 +23,7 @@ export default function App() {
     <NavigationContainer>
       <StatusBar style="light" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {/* <Toast.Provider/> */}
         <Stack.Screen
           name='Tab'
           component={TabNavigator}
