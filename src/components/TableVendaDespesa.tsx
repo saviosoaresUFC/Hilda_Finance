@@ -7,7 +7,6 @@ interface State {
     tableHead: string[];
     tableData: string[][];
 }
-
 export default class TableVendaDespesa extends Component {
     state: State = {
         tableHead: ['Mes', 'Venda', 'Despesa'],
@@ -43,13 +42,13 @@ export default class TableVendaDespesa extends Component {
                                             data={cellData}
                                             textStyle={{
                                                 ...styles.text,
-                                                ...(cellIndex === 2 ? styles.textColor : {}),
                                                 ...(cellIndex === 1 ? styles.textColor : {}),
+                                                ...(cellIndex === 2 ? styles.textColor : {}),
                                             }}
                                             style={{
                                                 ...styles.cell,
-                                                ...(cellIndex === 2 ? styles.despesaCell : {}),
                                                 ...(cellIndex === 1 ? styles.vendaCell : {}),
+                                                ...(cellIndex === 2 ? styles.despesaCell : {}),
                                             }}
                                         />
                                     ))
