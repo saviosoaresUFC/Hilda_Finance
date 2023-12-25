@@ -1,24 +1,23 @@
 import React, { useState } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, Pressable } from 'react-native'
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, Pressable, ToastAndroid } from 'react-native'
 import HeaderBar from '../components/HeaderBar'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/theme'
+import { collection, doc, setDoc, db, getDocs, } from '../../Firebase/firebaseConfig'
+import { MaterialIcons } from '@expo/vector-icons';
+
 
 
 const Despesa = () => {
   const HandlePress = () => {
     Keyboard.dismiss();
   }
-
   const [amount, setAmount] = useState('R$ 0,00');
-
   const handleAmountChange = (text) => {
     // Remove todos os caracteres não numéricos
     const numericInput = text.replace(/[^0-9]/g, '');
-
     // Formata o valor monetário
     const formattedAmount = formatCurrency(numericInput);
-
     // Atualiza o estado
     setAmount(formattedAmount);
   };
@@ -31,19 +30,51 @@ const Despesa = () => {
       currency: 'BRL',
       minimumFractionDigits: 2,
     });
-
     return formattedValue;
   };
 
-  const handleButtonClick = () => {
-    // Fazer algo com o valor numérico, por exemplo, enviar para o servidor
-    console.log('Valor Numérico:', amount);
-    setAmount('R$ 0,00');
-  };
+  const nomesDosMeses = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+
+  const getNextDespesaNumber = async () => {
+    const despesasCollection = collection(db, "bdHildaFinance");
+    const despesasSnapshot = await getDocs(despesasCollection);
+    const despesaNumber = despesasSnapshot.size + 1; // Próximo número de despesa
+    return despesaNumber;
+  }
+
+  const addItemBD = async () => {
+    try {
+      const despesaNumber = await getNextDespesaNumber();
+      const despesaDocumentName = `despesa${despesaNumber}`;
+      const despesaDocRef = doc(collection(db, "bdHildaFinance"), despesaDocumentName);
+      const dataAtual = new Date();
+      const numericAmount = amount.replace(/[^0-9]/g, '') / 100;
+
+      await setDoc(despesaDocRef, {
+        date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`,
+        month: nomesDosMeses[new Date().getMonth()],
+        value: numericAmount
+      });
+      setAmount('R$ 0,00');
+      console.log("Document written with ID: ", despesaDocumentName);
+      ToastAndroid.showWithGravity(`Despesa de ${numericAmount} gravado.`,
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER
+      );
+      console.log('Valor Numérico:', numericAmount);
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+  }
+
+
   return (
     <Pressable onPress={HandlePress} style={styles.container}>
       <View style={styles.headerBar}>
-      <HeaderBar />
+        <HeaderBar />
       </View>
       <View style={styles.title}>
         <Text style={styles.text}>Cadastro de Despesas</Text>
@@ -58,10 +89,22 @@ const Despesa = () => {
           keyboardType='numeric'
           value={amount}
           onChangeText={handleAmountChange}
+          onSubmitEditing={() => {
+            addItemBD();
+            Keyboard.dismiss();
+          }
+          }
         />
       </View>
       <View style={styles.viewButton}>
-        <TouchableOpacity style={styles.buttonAdd} onPress={handleButtonClick}>
+        <TouchableOpacity
+          style={styles.buttonAdd}
+          onPress={() => {
+            addItemBD();
+            Keyboard.dismiss();
+          }
+          }
+        >
           <Ionicons name='ios-add' style={styles.icon} />
         </TouchableOpacity>
       </View>
