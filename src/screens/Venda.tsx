@@ -8,6 +8,8 @@ import { useStore } from '../store/store'
 import ModalPrices from '../components/ModalPrices'
 
 const Venda = () => {
+  // VENDAS => id, product, value, type, month;
+  // DESPESAS => id, value, month;
 
   const [mostrarBag, setMostrarBag] = useState(false);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -22,10 +24,10 @@ const Venda = () => {
   const CartPrice = useStore((state: any) => state.CartPrice);
   const CartList = useStore((state: any) => state.CartList);
   const cleanCartList = useStore((state: any) => state.cleanCartList);
+  const removeFromCart = useStore((state: any) => state.removeFromCart);
 
   const toggleBag = () => {
     setMostrarBag(!mostrarBag);
-
   };
 
   const FoodCardAddToCart = ({
@@ -48,10 +50,7 @@ const Venda = () => {
       ToastAndroid.CENTER
     );
     console.log(name, ' -> ', price);
-    console.log('Cart -> ', CartPrice);
-    // console.log('CartList -> ', CartList);
   }
-
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -73,25 +72,35 @@ const Venda = () => {
           DrinksList={DrinksList}
         />
       </View>
-      {mostrarBag && (
+      {CartPrice > 0 ? (
         <View style={styles.cart}>
+          <View style={styles.notification}>
+            <Text style={styles.textNotification}>{CartList.length}</Text>
+          </View>
+
           <TouchableOpacity onPress={() => setMostrarModal(true)} style={styles.buttonPressCart}>
             <Image source={require('../../img/bag.png')} style={styles.imgBag} />
           </TouchableOpacity>
         </View>
-      )}
+      )
+        : (
+          <View style={styles.cart}>
+            <TouchableOpacity onPress={() => setMostrarModal(true)} style={styles.buttonPressCart}>
+              <Image source={require('../../img/bag.png')} style={styles.imgBag} />
+            </TouchableOpacity>
+          </View>
+        )}
       {mostrarModal && (
-        <View style={styles.modal}>
-          <ModalPrices
-            buttonPressHandler={() => {
-              setMostrarModal(false);
-            }}
-            price={CartPrice}
-            CartList={CartList}
-          />
-        </View>
+        <ModalPrices
+          buttonPressHandler={() => {
+            setMostrarModal(false);
+          }}
+          price={CartPrice}
+          CartList={CartList}
+          cleanCartList={cleanCartList}
+          removeFromCart={removeFromCart}
+        />
       )}
-
     </ScrollView>
   )
 }
@@ -99,8 +108,6 @@ const Venda = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#C2C2C2',
-    // flex: 1,
-    // marginBottom: 100,
   },
   headerBar: {
     height: '10%',
@@ -119,14 +126,16 @@ const styles = StyleSheet.create({
     height: 700,
     justifyContent: 'space-between',
     paddingTop: '5%',
-    marginBottom: '40%',
+    marginBottom: '50%',
+    paddingBottom: '52%',
+    // backgroundColor: 'blue',
   },
   cart: {
     position: 'absolute',
     backgroundColor: COLORS.orange,
     borderRadius: 100,
-    height: '7%',
-    width: '18%',
+    height: '6%',
+    width: '16%',
     justifyContent: 'center',
     alignItems: 'center',
     top: '11.8%',
@@ -143,11 +152,23 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
   },
-  modal: {
-    flex: 1,
+  notification: {
+    position: 'absolute',
+    backgroundColor: 'blue',
+    borderRadius: 100,
+    height: '40%',
+    width: '40%',
     justifyContent: 'center',
     alignItems: 'center',
-  }
+    bottom: '60%',
+    left: '60%',
+    // opacity: 0.8,
+  },
+  textNotification: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: 'white',
+  },
 })
 
 export default Venda
