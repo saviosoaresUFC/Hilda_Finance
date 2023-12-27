@@ -70,12 +70,15 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                 const vendaNumber = await getNextVendaNumber();
                 const vendaDocumentName = `venda${vendaNumber}`;
                 const vendaDocRef = doc(collection(db, "bdHildaFinance"), vendaDocumentName);
+                const dataAtual = new Date();
+
                 await setDoc(vendaDocRef, {
                     id: item.id,
                     product: item.name,
                     value: parseFloat(item.ItemPrice.replace("R$ ", "").replace(",", ".")),
                     type: item.type,
                     month: nomesDosMeses[new Date().getMonth()],
+                    date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`
                 });
                 console.log("Document written with ID: ", vendaDocumentName);
                 ToastAndroid.showWithGravity(`${item.name} gravado.`,
@@ -101,7 +104,7 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                 <TouchableOpacity onPress={buttonPressHandler} style={{ flex: 1 }} />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    style={styles.scrollView}
+                    style={[styles.scrollView, {top: CartList.length === 0 ? '30%' : '17%'}]}
                 >
                     <View style={styles.modal}>
                         {CartList.map((item, index) => {
@@ -141,7 +144,7 @@ const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
         height: '100%',
-        top: '15%',
+        top: '17%',
     },
     modal: {
         backgroundColor: 'white',
