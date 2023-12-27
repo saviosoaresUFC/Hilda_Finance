@@ -1,70 +1,90 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 import { COLORS } from '../theme/theme';
 import { Table, Row, TableWrapper, Cell } from 'react-native-table-component';
+import { db, collection, getDocs } from '../../Firebase/firebaseConfig'
 
-interface State {
-    tableHead: string[];
-    tableData: string[][];
-}
+const TableLucro = () => {
+    const [tableHead] = useState(['Mes', 'Lucro']);
+    const [tableData, setTableData] = useState([]);
 
-export default class TableLucro extends Component {
-    state: State = {
-        tableHead: ['Mes', 'Lucro'],
-        tableData: [
-            ['Janeiro', 'R$ ' + 86.51],
-            ['Fevereiro', 'R$ ' + 26.13],
-            ['Marco', 'R$ ' + 500.98],
-            ['Abril', 'R$ ' + 86.51],
-            ['Maio', 'R$ ' + 30.98],
-            ['Junho', 'R$ ' + 200.13],
-            ['Julho', 'R$ ' + 100.48],
-            ['Agosto', 'R$ ' + 500.98],
-            ['Setembro', 'R$ ' + 300.13],
-            ['Outubro', 'R$ ' + 100.98],
-            ['Novembro', 'R$ ' + 90.98],
-            ['Dezembro', 'R$ ' + 86.51],
-        ],
+    const getDataDB = async () => {
+        try {
+            const querySnapshot = await getDocs(collection(db, 'bdHildaFinance'));
+
+            const newData = [
+                ['Janeiro', 0],
+                ['Fevereiro', 'R$ ' + 0],
+                ['Marco',0],
+                ['Abril', 'R$ ' + 0],
+                ['Maio', 'R$ ' + 0],
+                ['Junho', 'R$ ' + 0],
+                ['Julho', 'R$ ' + 0],
+                ['Agosto', 'R$ ' + 0],
+                ['Setembro', 'R$ ' + 0],
+                ['Outubro', 'R$ ' + 0],
+                ['Novembro', 'R$ ' + 0],
+                ['Dezembro',+ 0],
+              ];
+
+              querySnapshot.forEach((doc) => {
+                const monthIndex = newData.findIndex(row => row[0] === doc.data().month);
+                if (monthIndex !== -1) {
+                  const isVenda = doc.data().hasOwnProperty('product');
+                  const dataIndex = isVenda ? 1 : 2; // Decide whether to update Venda or Despesa
+        
+                  newData[monthIndex][dataIndex] += isVenda ? doc.data().value : -doc.data().value;
+
+                //   const currentValue = parseFloat(newData[monthIndex][dataIndex].replace('R$ ', ''));
+        
+                //   newData[monthIndex][dataIndex] = 'R$ ' + (currentValue + doc.data().value);
+                }
+              });
+              
+            setTableData(newData); // Atualiza o estado com os novos dados
+        } catch (error) {
+            console.log('Erro ao buscar dados do banco de dados', error);
+        }
     };
 
-    render() {
-        const { tableHead, tableData } = this.state;
-        return (
-            <>
-                <Table style={styles.table}>
-                    <Row data={tableHead} style={styles.head} textStyle={styles.textTitle} />
-                    {
-                        tableData.map((rowData, index) => (
-                            <TableWrapper key={index} style={styles.row}>
-                                {
-                                    rowData.map((cellData, cellIndex) => (
-                                        <Cell
-                                            key={cellIndex}
-                                            data={cellData}
-                                            textStyle={{
-                                                ...styles.text,
-                                                ...(cellIndex === 1 ? styles.textColor : {}),
-                                            }}
-                                            style={{
-                                                ...styles.cell,
-                                                ...(cellIndex === 1 ? styles.lucroCell : {}),
-                                            }}
-                                        />
-                                    ))
-                                }
-                            </TableWrapper>
-                        ))
-                    }
-                </Table>
-                <View style={styles.body}>
-                    <View style={styles.content}>
-                        <Text style={styles.textTotal}>TOTAL LUCRO  - R$ 0,00</Text>
-                    </View>
+    useEffect(() => {
+        getDataDB();
+    }, [tableData]);
+    return (
+        <>
+            <Table style={styles.table}>
+                <Row data={tableHead} style={styles.head} textStyle={styles.textTitle} />
+                {
+                    tableData.map((rowData, index) => (
+                        <TableWrapper key={index} style={styles.row}>
+                            {
+                                rowData.map((cellData, cellIndex) => (
+                                    <Cell
+                                        key={cellIndex}
+                                        data={cellData}
+                                        textStyle={{
+                                            ...styles.text,
+                                            ...(cellIndex === 1 ? styles.textColor : {}),
+                                        }}
+                                        style={{
+                                            ...styles.cell,
+                                            ...(cellIndex === 1 ? styles.lucroCell : {}),
+                                        }}
+                                    />
+                                ))
+                            }
+                        </TableWrapper>
+                    ))
+                }
+            </Table>
+            <View style={styles.body}>
+                <View style={styles.content}>
+                    <Text style={styles.textTotal}>TOTAL LUCRO  - R$ 0,00</Text>
                 </View>
-            </>
+            </View>
+        </>
 
-        )
-    }
+    )
 }
 
 
@@ -134,3 +154,5 @@ const styles = StyleSheet.create({
         fontSize: 18,
     }
 })
+
+export default TableLucro
