@@ -1,13 +1,17 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import HeaderBar from '../components/HeaderBar'
 import TableVendaDespesa from '../components/TableVendaDespesa'
 import { COLORS } from '../theme/theme'
 import TableLucro from '../components/TableLucro'
 import { StatusBar } from 'expo-status-bar'
+import { app, db, collection, addDoc, getDocs, doc, setDoc } from '../../Firebase/firebaseConfig'
 
 
 const Relatorio = () => {
+  
+
+
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <View style={styles.headerBar}>
