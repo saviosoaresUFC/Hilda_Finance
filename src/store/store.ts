@@ -31,8 +31,7 @@ export const useStore = create(
             
                         for (let i = 0; i < state.CartList.length; i++) {
                             let tempprice = 0;
-            
-                            // Certifique-se de que o preço é um número antes de adicionar
+                            // Certifica que o preço é um número antes de adicionar
                             if (!isNaN(parseFloat(state.CartList[i].price))) {
                                 tempprice = parseFloat(state.CartList[i].price);
                             } else {
@@ -51,6 +50,19 @@ export const useStore = create(
                     produce(state => {
                         state.CartList = [];
                         state.CartPrice = 0;
+                    }),
+                ),
+            removeFromCart: (cartItem: any) =>
+                set(
+                    produce(state => {
+                        for (let i = 0; i < state.CartList.length; i++) {
+                            if (state.CartList[i].id == cartItem.id && state.CartList[i].type == cartItem.type) {
+                                state.CartList.splice(i, 1);
+                                // diminui o valor do Price Total
+                                state.CartPrice = (parseFloat(state.CartPrice) - parseFloat(cartItem.ItemPrice)).toFixed(2).toString();
+                                break;
+                            }
+                        }
                     }),
                 ),
         }),
