@@ -63,6 +63,7 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
     const addItemBD = async () => {
         try {
             if (CartList.length === 0) {
+                buttonPressHandler();
                 return; // Se não houver itens na lista, não faz nada
             }
             for (let i = 0; i < CartList.length; i++) {
@@ -91,23 +92,29 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
             console.error("Error adding document: ", e);
         }
     }
+
+
     return (
-        <View>
+        <>
             <Modal
                 visible={true}
                 animationType="slide"
                 transparent={true}
                 presentationStyle='overFullScreen'
+                
             >
-                <BlurView style={StyleSheet.absoluteFill} intensity={36} tint="dark" />
+                <BlurView onTouchStart={buttonPressHandler} style={StyleSheet.absoluteFill} intensity={36} tint="dark" />
+                <TouchableOpacity onPress={buttonPressHandler} style={{ flex:1 }} />
                 {/* Fechar o Modal */}
-                <TouchableOpacity onPress={buttonPressHandler} style={{ flex: 1 }} />
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    style={[styles.scrollView, {top: CartList.length === 0 ? '30%' : '17%'}]}
+                    style={[styles.scrollView, { top: (CartList.length === 0 ? '30%' : '17%') }]}
                 >
                     <View style={styles.modal}>
                         {CartList.map((item, index) => {
+                            if (CartList.length === 0) {
+                                buttonPressHandler()
+                            }
                             return (
                                 <View key={index} style={styles.itens}>
                                     <TouchableOpacity
@@ -136,21 +143,27 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                     </View>
                 </ScrollView>
             </Modal>
-        </View>
+        </>
     )
 }
 
 const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
-        height: '100%',
-        top: '17%',
+        // bottom: '100%',
+        // height: '100%',
+        // top: '57%',
+        // marginBottom: '20%',
+        // backgroundColor: 'rgba(0,0,0,0.5)',
+        // marginBottom: '9%',
+        bottom: '100%',
     },
     modal: {
         backgroundColor: 'white',
         padding: '4%',
         borderRadius: 8,
-        height: '100%',
+        marginTop: '9%',
+        // height: '500%',
         paddingBottom: '40%',
     },
     button: {
