@@ -12,7 +12,7 @@ const Stack = createNativeStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  useEffect(() => {
+  useEffect(() => { 
     SplashScreen.hideAsync();
   }, []);
 
@@ -23,7 +23,6 @@ export default function App() {
     <NavigationContainer>
       <StatusBar style="light" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* <Toast.Provider/> */}
         <Stack.Screen
           name='Tab'
           component={TabNavigator}
