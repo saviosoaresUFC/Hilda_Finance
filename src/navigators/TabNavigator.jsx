@@ -17,9 +17,6 @@ const TabNavigator = () => {
                 headerShown: false,
                 tabBarShowLabel: false,
                 tabBarStyle: styles.tabBarStyle,
-                // tabBarBackground: () => (
-                //     <BlurView tint='light' intensity={16} style={StyleSheet.absoluteFill} />
-                // ),
             }}>
             <Tab.Screen
                 name="Venda"
@@ -42,7 +39,7 @@ const TabNavigator = () => {
             />
 
             <Tab.Screen
-                name="Relaroio"
+                name="Relatorio"
                 component={Relatorio}
                 options={{
                     tabBarIcon: () => (
