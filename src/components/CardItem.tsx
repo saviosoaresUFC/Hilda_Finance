@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {
     StyleSheet, Text, View,
-    Image, TouchableOpacity, ToastAndroid,
+    Image, TouchableOpacity,
     FlatList
 } from 'react-native'
 import { Entypo, Ionicons } from '@expo/vector-icons';
@@ -26,25 +26,25 @@ const CardItem: React.FC<CardItemProps> = ({
     FoodList,
     DrinksList,
 }) => {
-    const [mostrarIconesSKWS, setMostrarIconesSKWS] = useState(false);
-    const [mostrarIconesSKWC, setMostrarIconesSKWC] = useState(false);
-    const [mostrarIconesHamburguer, setMostrarIconesHamburguer] = useState(false);
-    const [mostrarIconesFood, setMostrarIconesFood] = useState(false);
-    const [mostrarIconesDrink, setMostrarIconesDrink] = useState(false);
+    const [mostrarIconesSKWS, setMostrarIconesSKWS] = useState(false);  // Mostrar os icones de espeto simples
+    const [mostrarIconesSKWC, setMostrarIconesSKWC] = useState(false);  // Mostrar os icones de espeto completo
+    const [mostrarIconesHamburguer, setMostrarIconesHamburguer] = useState(false);  // Mostrar os icones de hamburguer
+    const [mostrarIconesFood, setMostrarIconesFood] = useState(false);  // Mostrar os icones de arrumadinho
+    const [mostrarIconesDrink, setMostrarIconesDrink] = useState(false);    // Mostrar os icones de bebidas
 
-    const toggleIconesSKWS = () => {
+    const toggleIconesSKWS = () => {    // Mostrar os icones de espeto simples
         setMostrarIconesSKWS(!mostrarIconesSKWS);
     };
-    const toggleIconesSKWC = () => {
+    const toggleIconesSKWC = () => {    // Mostrar os icones de espeto completo
         setMostrarIconesSKWC(!mostrarIconesSKWC);
     };
-    const toggleIconesHamburguer = () => {
+    const toggleIconesHamburguer = () => {  // Mostrar os icones de hamburguer
         setMostrarIconesHamburguer(!mostrarIconesHamburguer);
     };
-    const toggleIconesFood = () => {
+    const toggleIconesFood = () => {    // Mostrar os icones de arrumadinho
         setMostrarIconesFood(!mostrarIconesFood);
     };
-    const toggleIconesDrink = () => {
+    const toggleIconesDrink = () => {   // Mostrar os icones de bebidas
         setMostrarIconesDrink(!mostrarIconesDrink);
     };
 
@@ -62,18 +62,20 @@ const CardItem: React.FC<CardItemProps> = ({
                 </TouchableOpacity>
             </View>
             {mostrarIconesSKWS ? (
-                SkewerSimpleList.map((item) => (
+                SkewerSimpleList.map((item: any) => (   // Mapeia a lista de espetos simples
                     <View key={item.id} style={styles.modalContent}>
                         <TouchableOpacity
                             style={styles.buttonPressAdd}
                             onPress={() => {
                                 buttonPressHandler(item);
-                                // console.log(item);
                                 buttonToggleBag();
                             }}
                         >
-                            <Ionicons name="add-circle-outline" size={24} color={COLORS.grayescuro} />
-                            <Text style={styles.textNameSubTitle}>{item.name}</Text>
+                            <Ionicons
+                                name="add-circle-outline"
+                                size={24}
+                                color={COLORS.grayescuro} />
+                            <Text style={styles.textNameSubTitle}>{item.name} - {item.price}</Text>
                         </TouchableOpacity>
                     </View>
                 ))
@@ -89,7 +91,7 @@ const CardItem: React.FC<CardItemProps> = ({
                 </TouchableOpacity>
             </View>
             {mostrarIconesSKWC ? (
-                SkewerCompleteList.map((item) => (
+                SkewerCompleteList.map((item: any) => (  // Mapeia a lista de espetos completos
                     <View key={item.id} style={styles.modalContent}>
                         <TouchableOpacity
                             style={styles.buttonPressAdd}
@@ -99,7 +101,7 @@ const CardItem: React.FC<CardItemProps> = ({
                             }}
                         >
                             <Ionicons name="add-circle-outline" size={24} color={COLORS.grayescuro} />
-                            <Text style={styles.textNameSubTitle}>{item.name}</Text>
+                            <Text style={styles.textNameSubTitle}>{item.name} - {item.price}</Text>
                         </TouchableOpacity>
                     </View>
                 ))
@@ -114,7 +116,7 @@ const CardItem: React.FC<CardItemProps> = ({
                 </TouchableOpacity>
             </View>
             {mostrarIconesHamburguer ? (
-                HamburguerList.map((item) => (
+                HamburguerList.map((item: any) => (  // Mapeia a lista de hamburgueres
                     <View key={item.id} style={styles.modalContent}>
                         <TouchableOpacity
                             style={styles.buttonPressAdd}
@@ -124,7 +126,7 @@ const CardItem: React.FC<CardItemProps> = ({
                             }}
                         >
                             <Ionicons name="add-circle-outline" size={24} color={COLORS.grayescuro} />
-                            <Text style={styles.textNameSubTitle}>{item.name}</Text>
+                            <Text style={styles.textNameSubTitle}>{item.name} - {item.price}</Text>
                         </TouchableOpacity>
                     </View>
                 ))
@@ -139,7 +141,7 @@ const CardItem: React.FC<CardItemProps> = ({
                 </TouchableOpacity>
             </View>
             {mostrarIconesFood ? (
-                FoodList.map((item) => (
+                FoodList.map((item: any) => (    // Mapeia a lista de arrumadinhos
                     <View key={item.id} style={styles.modalContent}>
                         <TouchableOpacity
                             style={styles.buttonPressAdd}
@@ -149,7 +151,7 @@ const CardItem: React.FC<CardItemProps> = ({
                             }}
                         >
                             <Ionicons name="add-circle-outline" size={24} color={COLORS.grayescuro} />
-                            <Text style={styles.textNameSubTitle}>{item.name}</Text>
+                            <Text style={styles.textNameSubTitle}>{item.name} - {item.price}</Text>
                         </TouchableOpacity>
                     </View>
                 ))
@@ -164,7 +166,7 @@ const CardItem: React.FC<CardItemProps> = ({
                 </TouchableOpacity>
             </View>
             {mostrarIconesDrink ? (
-                DrinksList.map((item) => (
+                DrinksList.map((item: any) => (  // Mapeia a lista de bebidas
                     <View key={item.id} style={styles.modalContent}>
                         <TouchableOpacity
                             style={styles.buttonPressAdd}
@@ -174,7 +176,7 @@ const CardItem: React.FC<CardItemProps> = ({
                             }}
                         >
                             <Ionicons name="add-circle-outline" size={24} color={COLORS.grayescuro} />
-                            <Text style={styles.textNameSubTitle}>{item.name}</Text>
+                            <Text style={styles.textNameSubTitle}>{item.name} - {item.price}</Text>
                         </TouchableOpacity>
                     </View>
                 ))
@@ -187,8 +189,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         position: 'relative',
-        alignItems: 'center',
-        // paddingBottom: '%',
+        alignItems: 'center', 
     },
     contentType: {
         justifyContent: 'center',
@@ -205,7 +206,6 @@ const styles = StyleSheet.create({
         height: '90%',
         width: '75%',
     },
-    
     img: {
         width: 40,
         height: 40,
@@ -216,19 +216,17 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         backgroundColor: '#fff',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingBottom: '2.5%',
+        paddingBottom: '3%',
         marginTop: -12,
         borderBottomRightRadius: 10,
         borderBottomLeftRadius: 10,
         width: '82%',
     },
     buttonPressAdd: {
-        flexDirection: 'row',
-        backgroundColor: 'white',
+        flexDirection: 'row', 
         width: '100%',
         paddingLeft: '24%',
+        right: '60%',
     },
     textNameSubTitle: {
         color: COLORS.grayescuro,
@@ -236,6 +234,17 @@ const styles = StyleSheet.create({
         marginLeft: '5%',
         fontFamily: 'Inter-Semibold',
         paddingBottom: '5%',
+    },
+    viewPrice: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: COLORS.orange,
+    }, 
+    textNameSubTitlePrice: { 
+        fontSize: 16,
+        marginLeft: '5%',
+        fontFamily: 'Inter-Semibold',
+        paddingBottom: '5%', 
     },
     viewTextTitle: {
         flex: 1,
