@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, ToastAndroid } from 'react-native';
 import { Table, Row, TableWrapper, Cell } from 'react-native-table-component';
 import { COLORS } from '../theme/theme';
 import { db, collection, getDocs } from '../../Firebase/firebaseConfig';
 
 const TableVendaDespesa = () => {
+  const [tableHead] = useState(['Mes', 'Venda', 'Despesa']);  // Cabeçalho da tabela
+  const [tableData, setTableData] = useState([]); // Dados da tabela
 
-  const [tableHead] = useState(['Mes', 'Venda', 'Despesa']);
-  const [tableData, setTableData] = useState([]);
-
-  const getDataDB = async () => {
+  const getDataDB = async () => { // Função para buscar os dados no banco de dados
     try {
-      const querySnapshot = await getDocs(collection(db, 'bdHildaFinance'));
-
-      // if (tableData.length === 0) {
-      const newData = [
+      const querySnapshot = await getDocs(collection(db, 'bdHildaFinance'));  // Busca os dados no banco de dados
+      const newData = [ // Cria um array com os dados iniciais
         ['Janeiro', 'R$ ' + 0, 'R$ ' + 0],
         ['Fevereiro', 'R$ ' + 0, 'R$ ' + 0],
         ['Marco', 'R$ ' + 0, 'R$ ' + 0],
@@ -29,26 +26,26 @@ const TableVendaDespesa = () => {
         ['Dezembro', 'R$ ' + 0, 'R$ ' + 0],
       ];
 
-      querySnapshot.forEach((doc) => {
-        const monthIndex = newData.findIndex(row => row[0] === doc.data().month);
-        if (monthIndex !== -1) {
-          const isVenda = doc.data().hasOwnProperty('product');
-          const dataIndex = isVenda ? 1 : 2; // Decide whether to update Venda or Despesa
-
-          const currentValue = parseFloat(newData[monthIndex][dataIndex].replace('R$ ', ''));
-
-          newData[monthIndex][dataIndex] = 'R$ ' + (currentValue + doc.data().value);
+      querySnapshot.forEach((doc) => {  // Percorre os dados buscados no banco de dados
+        const monthIndex = newData.findIndex(row => row[0] === doc.data().month); // Busca o index do mês no array newData
+        if (monthIndex !== -1) {  // Se o mês existir no array newData
+          const isVenda = doc.data().hasOwnProperty('product'); // Decide se é Venda ou Despesa
+          const dataIndex = isVenda ? 1 : 2;  // Index do valor no array newData
+          const currentValue = parseFloat(newData[monthIndex][dataIndex].replace('R$ ', '')); // Valor atual no array newData
+          newData[monthIndex][dataIndex] = 'R$ ' + (currentValue + doc.data().value); // Atualiza o valor no array newData
         }
       });
-
-      setTableData(newData); // Update the state with the new data
-    } catch (error) {
-      console.log('Erro ao buscar dados do banco de dados', error);
+      setTableData(newData);  // Atualiza o estado com os novos dados
+    } catch (error) { // Caso ocorra algum erro
+      ToastAndroid.show('Erro ao buscar dados do banco de dados',
+        ToastAndroid.SHORT,
+        ToastAndroid.CENTER,
+      );
     }
   };
-  useEffect(() => {
-    getDataDB();
-  }, [tableData]);
+  useEffect(() => { // Busca os dados no banco de dados
+    getDataDB();  // Função para buscar os dados no banco de dados
+  }, [tableData]);  // Toda vez que o estado tableData for atualizado, a função getDataDB é chamada
 
 
   return (
@@ -68,20 +65,14 @@ const TableVendaDespesa = () => {
                 }}
                 style={{
                   ...styles.cell,
-                  ...(cellIndex === 1 ? styles.vendaCell : {}),
-                  ...(cellIndex === 2 ? styles.despesaCell : {}),
+                  ...(cellIndex === 1 ? (cellData === 'R$ 0' ? {...styles.vendaCell, opacity: 0.5} : styles.vendaCell) : {}),
+                  ...(cellIndex === 2 ? (cellData === 'R$ 0' ? {...styles.despesaCell, opacity: 0.5} : styles.despesaCell) : {}),
                 }}
               />
             ))}
           </TableWrapper>
         ))}
-      </Table>
-      <View style={styles.body}>
-        <View style={styles.content}>
-          <Text style={styles.textTotal}>TOTAL VENDA - R$ 0,00</Text>
-          <Text style={styles.textTotal}>TOTAL DESPESA - R$ 0,00</Text>
-        </View>
-      </View>
+      </Table> 
     </>
   );
 };
@@ -133,24 +124,7 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: '8%',
     fontFamily: 'Poppins-Semibold',
-  },
-  body: {
-    alignItems: 'center',
-    height: '4%',
-  },
-  content: {
-    backgroundColor: 'white',
-    borderRadius: 14,
-    alignItems: 'center',
-    justifyContent: 'center',
-    width: '70%',
-    height: '100%',
-  },
-  textTotal: {
-    fontFamily: 'Poppins-Semibold',
-    color: COLORS.grayescuro,
-    fontSize: 18,
-  },
+  }, 
 });
 
 export default TableVendaDespesa;
