@@ -7,7 +7,7 @@ import {
 } from 'react-native'
 import { COLORS } from '../theme/theme';
 import { Octicons } from '@expo/vector-icons';
-import { collection, addDoc, app, db, getDocs, doc, setDoc } from '../../Firebase/firebaseConfig';
+import { collection, db, getDocs, doc, setDoc } from '../../Firebase/firebaseConfig';
 
 interface ModalPricesProps {
     buttonPressHandler: any;
@@ -18,57 +18,38 @@ interface ModalPricesProps {
 }
 
 const ModalPrices: React.FC<ModalPricesProps> = ({
-    buttonPressHandler,
-    price,
-    CartList,
-    cleanCartList,
-    removeFromCart,
+    buttonPressHandler, // modal como falso
+    price, // preço do Cart
+    CartList, // Lista do Cart
+    cleanCartList, // função que limpa o Cart
+    removeFromCart, // função que remove do Cart
 }) => {
 
-    // const [id, setId] = useState('');
-    // const [product, setProduct] = useState('');
-    // const [value, setValue] = useState(0.00);
-    // const [type, setType] = useState('');
-
-
-    // useEffect(() => {
-    //     Call handleItemState when CartList changes
-    //     for (let i = 0; i < CartList.length; i++) {
-    //         handleItemState(CartList[i]);
-    //     }
-    //     if (CartList.length > 0) {
-    //         const item = CartList[0]; // Assuming you want to handle the first item
-    //         handleItemState(item);
-    //     }
-    // }, [CartList]);
-
-    // const handleItemState = (item) => {
-    //     setId(item.id);
-    //     setProduct(item.name);
-    //     setValue(parseFloat(item.ItemPrice.replace("R$ ", "").replace(",", ".")));
-    //     setType(item.type);
-    // };
     const nomesDosMeses = [
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
 
     const getNextVendaNumber = async () => {
-        const vendasCollection = collection(db, "bdHildaFinance");
-        const vendasSnapshot = await getDocs(vendasCollection);
+        const vendasCollection = collection(db, "bdHildaFinance"); // leitura das coleções do database
+        const vendasSnapshot = await getDocs(vendasCollection); // espera a busca e armazena na variavel
         const vendaNumber = vendasSnapshot.size + 1; // Próximo número de venda
         return vendaNumber;
     }
 
-    const addItemBD = async () => {
+    const addItemBD = async () => { // adiciona o item ao Database
         try {
             if (CartList.length === 0) {
                 buttonPressHandler();
                 return; // Se não houver itens na lista, não faz nada
             }
-            for (let i = 0; i < CartList.length; i++) {
+            for (let i = 0; i < CartList.length; i++) { // percorre todo o Cart
                 const item = CartList[i];
                 const vendaNumber = await getNextVendaNumber();
+                if (vendaNumber === 28) {   // o Firebase só aceita até 28 dados para a inserção por dia
+                    notification(`Limite de vendas atingido.`)
+                    return;
+                }
                 const vendaDocumentName = `venda${vendaNumber}`;
                 const vendaDocRef = doc(collection(db, "bdHildaFinance"), vendaDocumentName);
                 const dataAtual = new Date();
@@ -82,17 +63,20 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                     date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`
                 });
                 console.log("Document written with ID: ", vendaDocumentName);
-                ToastAndroid.showWithGravity(`${item.name} gravado.`,
-                    ToastAndroid.SHORT,
-                    ToastAndroid.CENTER
-                );
+                notification(`${item.name} gravado.`)
             }
             cleanCartList();
         } catch (e) {
-            console.error("Error adding document: ", e);
+            notification(`Error adding document: ${e}`);
         }
     }
 
+    const notification = (message: string) => {
+        ToastAndroid.showWithGravity(message,
+            ToastAndroid.SHORT,
+            ToastAndroid.CENTER
+        );
+    }
 
     return (
         <>
@@ -101,10 +85,10 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                 animationType="slide"
                 transparent={true}
                 presentationStyle='overFullScreen'
-                
+
             >
                 <BlurView onTouchStart={buttonPressHandler} style={StyleSheet.absoluteFill} intensity={36} tint="dark" />
-                <TouchableOpacity onPress={buttonPressHandler} style={{ flex:1 }} />
+                <TouchableOpacity onPress={buttonPressHandler} style={{ flex: 1 }} />
                 {/* Fechar o Modal */}
                 <ScrollView
                     showsVerticalScrollIndicator={false}
@@ -150,12 +134,6 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
 const styles = StyleSheet.create({
     scrollView: {
         flex: 1,
-        // bottom: '100%',
-        // height: '100%',
-        // top: '57%',
-        // marginBottom: '20%',
-        // backgroundColor: 'rgba(0,0,0,0.5)',
-        // marginBottom: '9%',
         bottom: '100%',
     },
     modal: {
@@ -163,7 +141,6 @@ const styles = StyleSheet.create({
         padding: '4%',
         borderRadius: 8,
         marginTop: '9%',
-        // height: '500%',
         paddingBottom: '40%',
     },
     button: {
@@ -172,7 +149,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: 'center',
         alignItems: 'center',
-        // width: '100%',
     },
     text: {
         fontSize: 18,
