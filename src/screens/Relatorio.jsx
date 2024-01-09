@@ -1,21 +1,15 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import { StyleSheet, Text, View, ScrollView } from 'react-native'
 import HeaderBar from '../components/HeaderBar'
 import TableVendaDespesa from '../components/TableVendaDespesa'
-import { COLORS } from '../theme/theme'
 import TableLucro from '../components/TableLucro'
-import { StatusBar } from 'expo-status-bar'
-import { app, db, collection, addDoc, getDocs, doc, setDoc } from '../../Firebase/firebaseConfig'
 
 
 const Relatorio = () => {
-  
-
-
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <View style={styles.headerBar}>
-        <HeaderBar />
+        <HeaderBar/>
       </View>
       <View style={styles.title}>
         <Text style={styles.text}>Relatório Venda/Despesa</Text>
@@ -24,7 +18,7 @@ const Relatorio = () => {
       <View style={styles.title2}>
         <Text style={styles.text}>Relatório Lucro</Text>
       </View>
-      <TableLucro />
+      <TableLucro/>
     </ScrollView>
   );
 }
@@ -45,11 +39,10 @@ const styles = StyleSheet.create({
   title2: {
     justifyContent: 'center',
     alignItems: 'center',
-    // marginBottom: '60%',
     marginTop: '12%',
   },
   headerBar: {
-    height: '6%',
+    height: '6.5%',
   },
 })
 
