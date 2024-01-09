@@ -4,7 +4,6 @@ import HeaderBar from '../components/HeaderBar'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/theme'
 import { collection, doc, setDoc, db, getDocs, } from '../../Firebase/firebaseConfig'
-import { MaterialIcons } from '@expo/vector-icons';
 
 
 
@@ -14,62 +13,63 @@ const Despesa = () => {
   }
   const [amount, setAmount] = useState('R$ 0,00');
   const handleAmountChange = (text) => {
-    // Remove todos os caracteres não numéricos
-    const numericInput = text.replace(/[^0-9]/g, '');
-    // Formata o valor monetário
-    const formattedAmount = formatCurrency(numericInput);
-    // Atualiza o estado
-    setAmount(formattedAmount);
+    const numericInput = text.replace(/[^0-9]/g, ''); // Remove todos os caracteres não numéricos
+    const formattedAmount = formatCurrency(numericInput); // Formata o valor monetário
+    setAmount(formattedAmount); // Atualiza o estado
   };
 
   const formatCurrency = (value) => {
-    // Adiciona a máscara de moeda ao valor
     const numericValue = parseFloat(value) / 100; // Converte para número e divide por 100
     const formattedValue = numericValue.toLocaleString('pt-BR', {
       style: 'currency',
       currency: 'BRL',
       minimumFractionDigits: 2,
-    });
-    return formattedValue;
+    }); // Formata o valor monetário para o padrão brasileiro (R$ 0,00)
+    return formattedValue; // Retorna o valor formatado
   };
 
-  const nomesDosMeses = [
+  const nomesDosMeses = [ // Array com os nomes dos meses
     'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
   ];
 
-  const getNextDespesaNumber = async () => {
+  const getNextDespesaNumber = async () => {  // Função para buscar o próximo número de despesa
     const despesasCollection = collection(db, "bdHildaFinance");
     const despesasSnapshot = await getDocs(despesasCollection);
     const despesaNumber = despesasSnapshot.size + 1; // Próximo número de despesa
     return despesaNumber;
   }
 
-  const addItemBD = async () => {
+  const addItemBD = async () => { // Função para adicionar um item no banco de dados
     try {
-      const despesaNumber = await getNextDespesaNumber();
-      const despesaDocumentName = `despesa${despesaNumber}`;
-      const despesaDocRef = doc(collection(db, "bdHildaFinance"), despesaDocumentName);
+      if(amount === 'R$ 0,00'){ // Verifica se o valor é válido, ou seja, diferente de zero
+         notification(`Insira um valor.`)
+        return;
+      }
+      const despesaNumber = await getNextDespesaNumber(); // Busca o próximo número de despesa
+      const despesaDocumentName = `despesa${despesaNumber}`;  // Nome do documento
+      const despesaDocRef = doc(collection(db, "bdHildaFinance"), despesaDocumentName); // Referência do documento
       const dataAtual = new Date();
-      const numericAmount = amount.replace(/[^0-9]/g, '') / 100;
+      const numericAmount = amount.replace(/[^0-9]/g, '') / 100;  // Converte para número e divide por 100
 
-      await setDoc(despesaDocRef, {
+      await setDoc(despesaDocRef, { // Adiciona o item no banco de dados
         date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`,
         month: nomesDosMeses[new Date().getMonth()],
         value: numericAmount
       });
-      setAmount('R$ 0,00');
-      console.log("Document written with ID: ", despesaDocumentName);
-      ToastAndroid.showWithGravity(`Despesa de ${numericAmount} gravado.`,
-        ToastAndroid.SHORT,
-        ToastAndroid.CENTER
-      );
-      console.log('Valor Numérico:', numericAmount);
+      setAmount('R$ 0,00'); // Reseta o valor do input
+      notification(`Despesa de ${numericAmount} gravado.`)
     } catch (e) {
-      console.error("Error adding document: ", e);
+      notification("Error ao adicionar documento");
     }
   }
 
+  const notification = (message) => { 
+    ToastAndroid.showWithGravity(message,
+      ToastAndroid.SHORT,
+      ToastAndroid.CENTER
+    );
+  }
 
   return (
     <Pressable onPress={HandlePress} style={styles.container}>
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     marginTop: '6%',
   },
   text: {
-    fontSize: 36,
+    fontSize: 32,
     fontWeight: 'bold',
   },
   titleGastos: {
@@ -164,8 +164,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.orange,
     width: '36%',
     borderRadius: 30,
-    // height: '30%'
-
   },
   icon: {
     fontSize: 64,
