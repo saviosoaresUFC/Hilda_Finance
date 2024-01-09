@@ -8,25 +8,22 @@ import { useStore } from '../store/store'
 import ModalPrices from '../components/ModalPrices'
 
 const Venda = () => {
-  // VENDAS => id, product, value, type, month;
-  // DESPESAS => id, value, month;
+  const [mostrarBag, setMostrarBag] = useState(false); // Mostrar a sacola de compras
+  const [mostrarModal, setMostrarModal] = useState(false); // Mostrar o modal de preços do Cart
 
-  const [mostrarBag, setMostrarBag] = useState(false);
-  const [mostrarModal, setMostrarModal] = useState(false);
+  const SkewerSimpleList = useStore((state: any) => state.SkewerSimpleList); // Lista de espetinhos simples
+  const SkewerCompleteList = useStore((state: any) => state.SkewerCompleteList); // Lista de espetinhos completos
+  const HamburguerList = useStore((state: any) => state.HamburguerList); // Lista de hamburgueres
+  const FoodList = useStore((state: any) => state.FoodList);  // Lista de Arrumadinhos
+  const DrinksList = useStore((state: any) => state.DrinksList);  // Lista de bebidas
+  const addToCart = useStore((state: any) => state.addToCart);  // Adiciona ao carrinho
+  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice);  // Calcula o preço do carrinho
+  const CartPrice = useStore((state: any) => state.CartPrice);  // Preço do carrinho
+  const CartList = useStore((state: any) => state.CartList);  // Lista do carrinho
+  const cleanCartList = useStore((state: any) => state.cleanCartList);  // Limpa o carrinho
+  const removeFromCart = useStore((state: any) => state.removeFromCart);  // Remove do carrinho
 
-  const SkewerSimpleList = useStore((state: any) => state.SkewerSimpleList);
-  const SkewerCompleteList = useStore((state: any) => state.SkewerCompleteList);
-  const HamburguerList = useStore((state: any) => state.HamburguerList);
-  const FoodList = useStore((state: any) => state.FoodList);
-  const DrinksList = useStore((state: any) => state.DrinksList);
-  const addToCart = useStore((state: any) => state.addToCart);
-  const calculateCartPrice = useStore((state: any) => state.calculateCartPrice);
-  const CartPrice = useStore((state: any) => state.CartPrice);
-  const CartList = useStore((state: any) => state.CartList);
-  const cleanCartList = useStore((state: any) => state.cleanCartList);
-  const removeFromCart = useStore((state: any) => state.removeFromCart);
-
-  const toggleBag = () => {
+  const toggleBag = () => { // Mostra a sacola de compras
     setMostrarBag(!mostrarBag);
   };
 
@@ -49,7 +46,6 @@ const Venda = () => {
       ToastAndroid.SHORT,
       ToastAndroid.CENTER
     );
-    console.log(name, ' -> ', price);
   }
 
   return (
@@ -72,25 +68,17 @@ const Venda = () => {
           DrinksList={DrinksList}
         />
       </View>
-      {CartPrice > 0 ? (
+      {CartPrice > 0 && ( // Mostra a sacola de compras se o preço for maior que 0
         <View style={styles.cart}>
           <View style={styles.notification}>
             <Text style={styles.textNotification}>{CartList.length}</Text>
           </View>
-
           <TouchableOpacity onPress={() => setMostrarModal(true)} style={styles.buttonPressCart}>
             <Image source={require('../../img/bag.png')} style={styles.imgBag} />
           </TouchableOpacity>
         </View>
-      )
-        : (
-          <View style={styles.cart}>
-            <TouchableOpacity onPress={() => setMostrarModal(true)} style={styles.buttonPressCart}>
-              <Image source={require('../../img/bag.png')} style={styles.imgBag} />
-            </TouchableOpacity>
-          </View>
-        )}
-      {mostrarModal && (
+      )}
+      {mostrarModal && (  // Mostra o modal de preços do Cart se mostrarModal for true
         <ModalPrices
           buttonPressHandler={() => {
             setMostrarModal(false);
@@ -110,13 +98,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#C2C2C2',
   },
   headerBar: {
-    height: '10%',
+    height: '9.8%',
   },
   title: {
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: '6%',
-    // backgroundColor: '#FFF',
   },
   text: {
     fontSize: 36,
@@ -126,9 +113,8 @@ const styles = StyleSheet.create({
     height: 700,
     justifyContent: 'space-between',
     paddingTop: '5%',
-    marginBottom: '50%',
-    paddingBottom: '52%',
-    // backgroundColor: 'blue',
+    marginBottom: '60%',
+    paddingBottom: '52%', 
   },
   cart: {
     position: 'absolute',
@@ -161,8 +147,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     bottom: '60%',
-    left: '60%',
-    // opacity: 0.8,
+    left: '60%', 
   },
   textNotification: {
     fontSize: 16,
