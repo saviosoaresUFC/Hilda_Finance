@@ -2,61 +2,63 @@ import React, { useState, useEffect } from 'react'
 import { StyleSheet, ToastAndroid } from 'react-native'
 import { COLORS } from '../theme/theme';
 import { Table, Row, TableWrapper, Cell } from 'react-native-table-component';
-import { db, collection, getDocs } from '../../Firebase/firebaseConfig'
+import { useStore } from '../store/store';
 
 const TableLucro = () => {
+    const ListaVendas = useStore((state) => state.ListaVendas); // Lista de vendas
+    const ListaDespesas = useStore((state) => state.ListaDespesas); // Lista de despesas
     const [tableHead] = useState(['Mes', 'Lucro']); // Cabeçalho da tabela
     const [tableData, setTableData] = useState([]); // Dados da tabela
     // const [totalLucro, setTotalLucro] = useState(0);
 
     const getDataDB = async () => {
-        try {
-            const querySnapshot = await getDocs(collection(db, 'bdHildaFinance'));  // Busca os dados no banco de dados
-            // let totalLucro = 0;
+        const newData = [ // Cria um array com os dados iniciais
+            ['Janeiro', 'R$ ' + 0],
+            ['Fevereiro', 'R$ ' + 0],
+            ['Marco', 'R$ ' + 0],
+            ['Abril', 'R$ ' + 0],
+            ['Maio', 'R$ ' + 0],
+            ['Junho', 'R$ ' + 0],
+            ['Julho', 'R$ ' + 0],
+            ['Agosto', 'R$ ' + 0],
+            ['Setembro', 'R$ ' + 0],
+            ['Outubro', 'R$ ' + 0],
+            ['Novembro', 'R$ ' + 0],
+            ['Dezembro', 'R$ ' + 0],
+        ];
 
-            const newData = [ // Cria um array com os dados iniciais
-                ['Janeiro', 'R$ ' + 0],
-                ['Fevereiro', 'R$ ' + 0],
-                ['Marco', 'R$ ' + 0],
-                ['Abril', 'R$ ' + 0],
-                ['Maio', 'R$ ' + 0],
-                ['Junho', 'R$ ' + 0],
-                ['Julho', 'R$ ' + 0],
-                ['Agosto', 'R$ ' + 0],
-                ['Setembro', 'R$ ' + 0],
-                ['Outubro', 'R$ ' + 0],
-                ['Novembro', 'R$ ' + 0],
-                ['Dezembro', 'R$ ' + 0],
-            ];
+        ListaVendas.forEach((item) => {
+            const monthIndex = newData.findIndex(row => row[0] === item.month);
+            if (monthIndex !== -1) {
+                const dataIndex = 1;
+                newData[monthIndex][dataIndex] = 'R$ ' + (
+                    parseFloat(newData[monthIndex][dataIndex].replace('R$ ', '')) + item.value
+                ).toFixed(2);
+            }
+        });
 
-            querySnapshot.forEach((doc) => {    // Percorre os dados buscados no banco de dados
-                const monthIndex = newData.findIndex(row => row[0] === doc.data().month);   // Busca o index do mês no array newData
-                if (monthIndex !== -1) {    // Se o mês existir no array newData
-                    const isVenda = doc.data().hasOwnProperty('product');   // Decide se é Venda ou Despesa
-                    const dataIndex = 1;    // Index do valor no array newData
+        ListaDespesas.forEach((item) => {
+            const monthIndex = newData.findIndex(row => row[0] === item.month);
+            if (monthIndex !== -1) {
+                const dataIndex = 1;
+                newData[monthIndex][dataIndex] = 'R$ ' + (
+                    parseFloat(newData[monthIndex][dataIndex].replace('R$ ', '')) - item.value
+                ).toFixed(2);
+            }
+        });
 
-                    const value = isVenda ? doc.data().value : -doc.data().value;   // Decide se o valor é positivo ou negativo
-                    newData[monthIndex][dataIndex] = 'R$ ' + (
-                        parseFloat(newData[monthIndex][dataIndex].replace('R$ ', '')) + value
-                    ).toFixed(2);   // Atualiza o valor no array newData
-
-                    // totalLucro += value;
-                }
-            });
-            setTableData(newData); // Atualiza o estado com os novos dados
-            // setTotalLucro(totalLucro.toFixed(2));
-        } catch (error) {
-            ToastAndroid.show('Erro ao buscar dados do banco de dados',
-                ToastAndroid.SHORT,
-                ToastAndroid.CENTER
-            );
-            // console.log('Erro ao buscar dados do banco de dados', error);
-        }
+        setTableData(newData); // Atualiza o estado com os novos dados
+        // setTotalLucro(totalLucro.toFixed(2));
     };
 
-    useEffect(() => {   // Busca os dados no banco de dados
-        getDataDB();    // Função para buscar os dados no banco de dados
-    }, [tableData]);    // Toda vez que o estado tableData for atualizado, a função getDataDB é chamada
+    useEffect(() => {
+        const fetchData = async () => {
+            await ListaVendas;
+            await ListaDespesas;
+            getDataDB();
+        }
+        fetchData();
+    }, [ListaVendas, ListaDespesas]);
     return (
         <>
             <Table style={styles.table}>
@@ -154,7 +156,7 @@ const styles = StyleSheet.create({
         color: 'white',
         marginTop: '6%',
         fontFamily: 'Poppins-Semibold',
-    }, 
+    },
 })
 
 export default TableLucro
