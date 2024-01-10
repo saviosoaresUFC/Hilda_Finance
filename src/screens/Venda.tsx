@@ -22,6 +22,10 @@ const Venda = () => {
   const CartList = useStore((state: any) => state.CartList);  // Lista do carrinho
   const cleanCartList = useStore((state: any) => state.cleanCartList);  // Limpa o carrinho
   const removeFromCart = useStore((state: any) => state.removeFromCart);  // Remove do carrinho
+  const ListaVendas = useStore((state: any) => state.ListaVendas);  // Lista de vendas
+  const addToVendas = useStore((state: any) => state.addToVendas);  // Adiciona a lista de vendas
+  const cleanListaVendas = useStore((state: any) => state.cleanListaVendas);  // Limpa a lista de vendas
+
 
   const toggleBag = () => { // Mostra a sacola de compras
     setMostrarBag(!mostrarBag);
@@ -87,6 +91,9 @@ const Venda = () => {
           CartList={CartList}
           cleanCartList={cleanCartList}
           removeFromCart={removeFromCart}
+          ListaVendas={ListaVendas}
+          addToVendas={addToVendas}
+          cleanListaVendas={cleanListaVendas}
         />
       )}
     </ScrollView>
@@ -98,7 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#C2C2C2',
   },
   headerBar: {
-    height: '9.8%',
+    height: '9.61%',
   },
   title: {
     justifyContent: 'center',
