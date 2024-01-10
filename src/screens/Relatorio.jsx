@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#C2C2C2',
   },
+  headerBar: {
+    height: '6.5%',
+  },
   title: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -40,9 +43,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: '12%',
-  },
-  headerBar: {
-    height: '6.5%',
   },
 })
 
