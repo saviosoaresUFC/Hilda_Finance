@@ -7,7 +7,8 @@ import {
 } from 'react-native'
 import { COLORS } from '../theme/theme';
 import { Octicons } from '@expo/vector-icons';
-import { collection, db, getDocs, doc, setDoc } from '../../Firebase/firebaseConfig';
+import { useStore } from '../store/store';
+// import { collection, db, getDocs, doc, setDoc } from '../../Firebase/firebaseConfig';
 
 interface ModalPricesProps {
     buttonPressHandler: any;
@@ -15,6 +16,9 @@ interface ModalPricesProps {
     CartList: any[];
     cleanCartList: any;
     removeFromCart: any;
+    ListaVendas: any[];
+    addToVendas: any;
+    cleanListaVendas: any;
 }
 
 const ModalPrices: React.FC<ModalPricesProps> = ({
@@ -23,6 +27,9 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
     CartList, // Lista do Cart
     cleanCartList, // função que limpa o Cart
     removeFromCart, // função que remove do Cart
+    ListaVendas, // Lista de vendas
+    addToVendas, // função que adiciona a lista de vendas
+    cleanListaVendas, // função que limpa a lista de vendas
 }) => {
 
     const nomesDosMeses = [
@@ -30,46 +37,27 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
 
-    const getNextVendaNumber = async () => {
-        const vendasCollection = collection(db, "bdHildaFinance"); // leitura das coleções do database
-        const vendasSnapshot = await getDocs(vendasCollection); // espera a busca e armazena na variavel
-        const vendaNumber = vendasSnapshot.size + 1; // Próximo número de venda
-        return vendaNumber;
-    }
-
-    const addItemBD = async () => { // adiciona o item ao Database
-        try {
+    const addItemBD = () => {
             if (CartList.length === 0) {
                 buttonPressHandler();
                 return; // Se não houver itens na lista, não faz nada
             }
-            for (let i = 0; i < CartList.length; i++) { // percorre todo o Cart
-                const item = CartList[i];
-                const vendaNumber = await getNextVendaNumber();
-                if (vendaNumber === 28) {   // o Firebase só aceita até 28 dados para a inserção por dia
-                    notification(`Limite de vendas atingido.`)
-                    return;
-                }
-                const vendaDocumentName = `venda${vendaNumber}`;
-                const vendaDocRef = doc(collection(db, "bdHildaFinance"), vendaDocumentName);
-                const dataAtual = new Date();
-
-                await setDoc(vendaDocRef, {
+            CartList.forEach((item) => {
+                const itemFinal = {
+                    date: `${new Date().toLocaleDateString("pt-BR")} ${new Date().toLocaleTimeString("pt-BR")}`,
                     id: item.id,
-                    product: item.name,
-                    value: parseFloat(item.ItemPrice.replace("R$ ", "").replace(",", ".")),
-                    type: item.type,
                     month: nomesDosMeses[new Date().getMonth()],
-                    date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`
-                });
-                console.log("Document written with ID: ", vendaDocumentName);
-                notification(`${item.name} gravado.`)
-            }
+                    product: item.name,
+                    type: item.type,
+                    value: parseFloat(item.ItemPrice.replace("R$ ", "").replace(",", ".")),
+                };
+                addToVendas(itemFinal);
+                notification(`${item.name} gravado.`);
+            });
             cleanCartList();
-        } catch (e) {
-            notification(`Error adding document: ${e}`);
-        }
     }
+
+    useEffect(() => {}, [ListaVendas]);
 
     const notification = (message: string) => {
         ToastAndroid.showWithGravity(message,
@@ -197,3 +185,44 @@ const styles = StyleSheet.create({
 })
 
 export default ModalPrices
+
+// const getNextVendaNumber = async () => {
+//     const vendasCollection = collection(db, "bdHildaFinance"); // leitura das coleções do database
+//     const vendasSnapshot = await getDocs(vendasCollection); // espera a busca e armazena na variavel
+//     const vendaNumber = vendasSnapshot.size + 1; // Próximo número de venda
+//     return vendaNumber;
+// }
+
+// const addItemBD = async () => { // adiciona o item ao Database
+//     try {
+//         if (CartList.length === 0) {
+//             buttonPressHandler();
+//             return; // Se não houver itens na lista, não faz nada
+//         }
+//         for (let i = 0; i < CartList.length; i++) { // percorre todo o Cart
+//             const item = CartList[i];
+//             const vendaNumber = await getNextVendaNumber();
+//             if (vendaNumber === 28) {   // o Firebase só aceita até 28 dados para a inserção por dia
+//                 notification(`Limite de vendas atingido.`)
+//                 return;
+//             }
+//             const vendaDocumentName = `venda${vendaNumber}`;
+//             const vendaDocRef = doc(collection(db, "bdHildaFinance"), vendaDocumentName);
+//             const dataAtual = new Date();
+
+//             await setDoc(vendaDocRef, {
+//                 id: item.id,
+//                 product: item.name,
+//                 value: parseFloat(item.ItemPrice.replace("R$ ", "").replace(",", ".")),
+//                 type: item.type,
+//                 month: nomesDosMeses[new Date().getMonth()],
+//                 date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`
+//             });
+//             console.log("Document written with ID: ", vendaDocumentName);
+//             notification(`${item.name} gravado.`)
+//         }
+//         cleanCartList();
+//     } catch (e) {
+//         notification(`Error adding document: ${e}`);
+//     }
+// }
