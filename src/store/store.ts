@@ -18,29 +18,43 @@ export const useStore = create(
             DrinksList: Drinks,             // Lista de Bebidas
             CartPrice: 0,               // Preço Total do Carrinho
             CartList: [],           // Lista de Itens do Carrinho
+            ListaVendas: [],    // Lista de Vendas
+            ListaDespesas: [],  // Lista de Despesas
+            addToVendas: (venda: any) =>    // Adiciona uma venda à lista de vendas
+                set(
+                    produce(state => {
+                        state.ListaVendas.push(venda);  // Adiciona a venda à lista de vendas
+                    }),
+                ),
+            addToDespesas: (despesa: any) =>    // Adiciona uma despesa à lista de despesas
+                set(
+                    produce(state => {
+                        state.ListaDespesas.push(despesa);  // Adiciona a despesa à lista de despesas
+                    }),
+                ),
             addToCart: (cartItem: any) =>   // Adiciona um item ao carrinho
                 set(
-                    produce(state => {  
+                    produce(state => {
                         state.CartList.push(cartItem);  // Adiciona o item ao carrinho
                     }),
                 ),
-                calculateCartPrice: () =>   // Calcula o preço total do carrinho
+            calculateCartPrice: () =>   // Calcula o preço total do carrinho
                 set(
                     produce(state => {
                         let totalprice = 0;
-            
+
                         for (let i = 0; i < state.CartList.length; i++) {   // Percorre a lista de itens do carrinho
                             let tempprice = 0;
                             if (!isNaN(parseFloat(state.CartList[i].price))) { // Certifica que o preço é um número antes de adicionar
                                 tempprice = parseFloat(state.CartList[i].price);    // Adiciona o preço do item
-                            } 
+                            }
                             // else {
                             //     console.error(`Preço para o item no índice ${i} não é um número válido`);
                             // }
                             state.CartList[i].ItemPrice = tempprice.toFixed(2).toString();  // Adiciona o preço do item
                             totalprice = totalprice + tempprice;    // Adiciona o preço do item ao preço total
                         }
-            
+
                         state.CartPrice = totalprice.toFixed(2).toString(); // Adiciona o preço total ao carrinho
                     }),
                 ),
@@ -49,6 +63,18 @@ export const useStore = create(
                     produce(state => {
                         state.CartList = [];   // Limpa a lista de itens do carrinho
                         state.CartPrice = 0;    // Limpa o preço total
+                    }),
+                ),
+            cleanListaDespesas: () =>    // Limpa a lista de despesas
+                set(
+                    produce(state => {
+                        state.ListaDespesas = [];   // Limpa a lista de despesas
+                    }),
+                ),
+            cleanListaVendas: () =>    // Limpa a lista de vendas
+                set(
+                    produce(state => {
+                        state.ListaVendas = [];   // Limpa a lista de vendas
                     }),
                 ),
             removeFromCart: (cartItem: any) =>  // Remove um item do carrinho e diminui o preço total
