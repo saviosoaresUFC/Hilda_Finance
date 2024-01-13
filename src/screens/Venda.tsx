@@ -7,7 +7,7 @@ import { COLORS } from '../theme/theme'
 import { useStore } from '../store/store'
 import ModalPrices from '../components/ModalPrices'
 
-const Venda = () => {
+const Venda = ({navigation}: any) => {
   const [mostrarBag, setMostrarBag] = useState(false); // Mostrar a sacola de compras
   const [mostrarModal, setMostrarModal] = useState(false); // Mostrar o modal de preços do Cart
 
@@ -26,6 +26,12 @@ const Venda = () => {
   const addToVendas = useStore((state: any) => state.addToVendas);  // Adiciona a lista de vendas
   const cleanListaVendas = useStore((state: any) => state.cleanListaVendas);  // Limpa a lista de vendas
 
+
+  const avaliableKey = (amount: string) => {
+    if (amount === '1') {
+      navigation.push('Informations');
+    }
+  }
 
   const toggleBag = () => { // Mostra a sacola de compras
     setMostrarBag(!mostrarBag);
@@ -56,7 +62,7 @@ const Venda = () => {
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
       <StatusBar style="light" backgroundColor={COLORS.orange} />
       <View style={styles.headerBar}>
-        <HeaderBar />
+        <HeaderBar avaliableKey={avaliableKey}/>
       </View>
       <View style={styles.title}>
         <Text style={styles.text}>Venda</Text>
