@@ -1,14 +1,18 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { BarChart, Grid } from 'react-native-svg-charts'
 import { Text } from 'react-native-svg'
 import { useStore } from '../store/store'
 import Meses from './Meses'
 import { LinearGradient, Stop, Defs } from 'react-native-svg'
+import { COLORS } from '../theme/theme'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
 
 const GraficLM = () => {
     const ListaVendas = useStore((state) => state.ListaVendas)
     const ListaDespesas = useStore((state) => state.ListaDespesas)
+    const cleanListaVendas = useStore((state) => state.cleanListaVendas)
+    const cleanListaDespesas = useStore((state) => state.cleanListaDespesas)
 
     const dataLM = [calcularLV("Janeiro"), calcularLV("Fevereiro"), calcularLV("Março"),
     calcularLV("Abril"), calcularLV("Maio"), calcularLV("Junho"),
@@ -25,8 +29,8 @@ const GraficLM = () => {
                     key={index}
                     x={x(index) + (bandwidth / 2)}
                     y={yPos}
-                    fontSize={14}
-                    fill={value >= 20 ? 'white' : 'black'}
+                    fontSize={8}
+                    fill={value >= 0 ? 'black' : 'red'}
                     alignmentBaseline={'middle'}
                     textAnchor={'middle'}
                 >
@@ -60,7 +64,7 @@ const GraficLM = () => {
     return (
         <View style={styles.graficLucroMensal}>
             <BarChart
-                style={{ height: '50%', width: '100%' }}
+                style={{ height: '30%', width: '100%' }}
                 data={dataLM}
                 svg={{
                     strokeWidth: 2,
@@ -71,10 +75,20 @@ const GraficLM = () => {
                 gridMin={0}
             >
                 <Grid />
-                <Gradient/>
+                <Gradient />
                 <Labels />
             </BarChart>
             <Meses />
+            <View style={styles.viewButton}>
+                <TouchableOpacity style={styles.buttonClean}
+                    onPress={() => { 
+                        cleanListaVendas()
+                        cleanListaDespesas()
+                     }}>
+                    <MaterialCommunityIcons name="broom" size={24} color="black" />
+                    <MaterialCommunityIcons name="alert" size={24} color="black" />
+                </TouchableOpacity>
+            </View>
         </View>
     )
 }
@@ -82,9 +96,27 @@ const GraficLM = () => {
 const styles = StyleSheet.create({
     graficLucroMensal: {
         alignItems: 'center',
-        marginBottom: '50%',
-        height: '60%',
+    },
+    viewButton: {
         width: '100%',
+        height: '6%',
+        alignItems: 'flex-end',
+        marginBottom: '50%',       
+
+    },
+    buttonClean: {
+        flexDirection: 'row',
+        width: '30%',
+        height: '100%',
+        backgroundColor: '#ff0000',
+        borderRadius: 10,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    textButton: {
+        // color: 'white',
+        fontSize: 16,
+        fontFamily: 'Inter-Black',
     },
 })
 
