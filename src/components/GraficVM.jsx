@@ -1,9 +1,11 @@
 import React from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import { COLORS } from '../theme/theme'
 import { useStore } from '../store/store'
-// import { Text } from 'react-native-svg'
-import { StackedBarChart, Grid } from 'react-native-svg-charts'
+import { Text } from 'react-native-svg'
+import { StackedBarChart, Grid, YAxis } from 'react-native-svg-charts'
+import Meses from './Meses'
+import Legends from './Legend'
 
 const GraficVM = () => {
     const ListaVendas = useStore((state) => state.ListaVendas)
@@ -119,99 +121,69 @@ const GraficVM = () => {
         },
     ]
 
-    function seeDataVM(month) {
+    function seeDataVM(month, type) {
         let total = 0
         ListaVendas.forEach((item) => {
-            if (item.month === month) {
+            if (item.month === month && item.type === type) {
                 total++;
             }
         })
-        return total
+        return total;
     }
 
-    const colors = ['#ff0000', '#F85252', '#F69393', '#FBCECE', '#FDEDED']
+    const colors = ['#ff0000', '#FF6B00', '#FFB800', '#2AD000', '#00AAD0']
     const keys = ['SkewerSimple', 'SkewerComplete', 'Hamburguer', 'Food', 'Drink']
-    const xLabels = dataVM.map((item) => item.monthSigla);
+
     return (
         <>
-            <StackedBarChart
-                style={{ height: '50%', width: '100%' }}
-                keys={keys}
-                colors={colors}
-                data={dataVM}
-                showGrid={true}
-                contentInset={{ top: 30, bottom: 30 }}
-                valueAcessor={({ item, key }) => item[key]}
-            >
-                <Grid />
-            </StackedBarChart>
-            <View style={styles.xAxisLabels}>
-                {xLabels.map((label, index) => (
-                    <Text key={index} style={styles.labelText}>
-                        {label}
-                    </Text>
-                ))}
-            </View>
-            <View style={styles.legends}>
-                <View style={styles.legendItem}>
-                    <View style={[styles.legendIcon, { backgroundColor: colors[0] }]} />
-                    <Text style={styles.legendText}>Espetinho Simples</Text>
+            <View style={{ height: '100%' }}>
+                <StackedBarChart
+                    style={{ height: '100%', width: '100%' }}
+                    keys={keys}
+                    colors={colors}
+                    data={dataVM}
+                    showGrid={true}
+                    contentInset={{ top: 0, bottom: 10 }}
+                // valueAcessor={({ item, key }) => item[key]}
+                >
+                    <Grid />
+                </StackedBarChart>
+                <YAxis
+                    style={styles.yAxis}
+                    data={dataVM.map((item) => item.SkewerSimple + item.SkewerComplete + item.Hamburguer + item.Food + item.Drink)}
+                    contentInset={{ top: 10, bottom: 8 }}
+                    svg={{
+                        fontSize: 10,
+                        fill: 'black',
+                        stroke: 'black',
+                        strokeWidth: 0.2,
+                        alignmentBaseline: 'baseline',
+                    }}
+                />
+                <View style={styles.footer}>
+                    <Meses />
+                    <Legends />
                 </View>
-                <View style={styles.legendItem}>
-                    <View style={[styles.legendIcon, { backgroundColor: colors[1] }]} />
-                    <Text style={styles.legendText}>Espetinho Completo</Text>
-                </View>
-                <View style={styles.legendItem}>
-                    <View style={[styles.legendIcon, { backgroundColor: colors[2] }]} />
-                    <Text style={styles.legendText}>Hamburguer</Text>
-                </View>
-                <View style={styles.legendItem}>
-                    <View style={[styles.legendIcon, { backgroundColor: colors[3] }]} />
-                    <Text style={styles.legendText}>Comida</Text>
-                </View>
-                <View style={styles.legendItem}>
-                    <View style={[styles.legendIcon, { backgroundColor: colors[4] }]} />
-                    <Text style={styles.legendText}>Bebida</Text>
-                </View>
+
             </View>
         </>
     )
 }
 
 const styles = StyleSheet.create({
-    xAxisLabels: {
-        flexDirection: 'row',
-        marginRight: '2.5%',
+    footer: {
+        top: '3%',
+        right: '1.5%',
+        marginBottom: '4%',
     },
-    labelText: {
-        fontFamily: 'Inter-Black',
-        fontSize: 12,
-        marginLeft: '2.5%',
-        marginTop: -20
+    yAxis: {
+        position: 'absolute', 
+        top: '-1%', 
+        height: '94%', 
+        left: '-3.5%',
+        // backgroundColor: COLORS.orange,
+        marginBottom: '4%',
     },
-    legends: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        marginTop: '5%',
-    },
-    legendItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginRight: '5%',
-        marginBottom: '2%',
-    },
-    legendIcon: {
-        width: 10,
-        height: 10,
-        borderRadius: 5,
-        marginRight: 7,
-    },
-    legendText: {
-        fontFamily: 'Inter-Semibold',
-        fontSize: 14,
-    },
-    
 })
 
 export default GraficVM
