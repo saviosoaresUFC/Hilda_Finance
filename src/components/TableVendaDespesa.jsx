@@ -14,7 +14,7 @@ const TableVendaDespesa = () => {
       const newData = [ // Cria um array com os dados iniciais
         ['Janeiro', 'R$ ' + 0, 'R$ ' + 0],
         ['Fevereiro', 'R$ ' + 0, 'R$ ' + 0],
-        ['Marco', 'R$ ' + 0, 'R$ ' + 0],
+        ['Março', 'R$ ' + 0, 'R$ ' + 0],
         ['Abril', 'R$ ' + 0, 'R$ ' + 0],
         ['Maio', 'R$ ' + 0, 'R$ ' + 0],
         ['Junho', 'R$ ' + 0, 'R$ ' + 0],
@@ -53,31 +53,37 @@ const TableVendaDespesa = () => {
     fetchData();
   }, [ListaVendas, ListaDespesas]); 
 
+  const formatDespesaCell = (cellData) => {
+    const numericValue = parseFloat(cellData.replace('R$ ', ''));
+    const formattedValue = numericValue.toFixed(2);
+    return `R$ ${formattedValue}`;
+  };
+
 
   return (
     <>
       <Table style={styles.table}>
         <Row data={tableHead} style={styles.head} textStyle={styles.textTitle} />
         {tableData.map((rowData, index) => (
-          <TableWrapper key={index} style={styles.row}>
-            {rowData.map((cellData, cellIndex) => (
-              <Cell
-                key={cellIndex}
-                data={cellData}
-                textStyle={{
-                  ...styles.text,
-                  ...(cellIndex === 1 ? styles.textColor : {}),
-                  ...(cellIndex === 2 ? styles.textColor : {}),
-                }}
-                style={{
-                  ...styles.cell,
-                  ...(cellIndex === 1 ? (cellData === 'R$ 0' ? { ...styles.vendaCell, opacity: 0.5 } : styles.vendaCell) : {}),
-                  ...(cellIndex === 2 ? (cellData === 'R$ 0' ? { ...styles.despesaCell, opacity: 0.5 } : styles.despesaCell) : {}),
-                }}
-              />
-            ))}
-          </TableWrapper>
-        ))}
+  <TableWrapper key={index} style={styles.row}>
+    {rowData.map((cellData, cellIndex) => (
+      <Cell
+        key={cellIndex}
+        data={cellIndex === 2 ? formatDespesaCell(cellData) : cellData}
+        textStyle={{
+          ...styles.text,
+          ...(cellIndex === 1 ? styles.textColor : {}),
+          ...(cellIndex === 2 ? styles.textColor : {}),
+        }}
+        style={{
+          ...styles.cell,
+          ...(cellIndex === 1 ? (cellData === 'R$ 0' ? { ...styles.vendaCell, opacity: 0.5 } : styles.vendaCell) : {}),
+          ...(cellIndex === 2 ? (cellData === 'R$ 0' ? { ...styles.despesaCell, opacity: 0.5 } : styles.despesaCell) : {}),
+        }}
+      />
+    ))}
+  </TableWrapper>
+))}
       </Table>
     </>
   );
