@@ -55,6 +55,7 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                 notification(`${item.name} gravado.`);
             });
             cleanCartList();
+            console.log("ListaVendas: ", ListaVendas);
     }
 
     useEffect(() => {}, [ListaVendas]);
