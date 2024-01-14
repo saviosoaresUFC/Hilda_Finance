@@ -1,13 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, Pressable, ToastAndroid } from 'react-native'
 import HeaderBar from '../components/HeaderBar'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/theme'
-import { collection, doc, setDoc, db, getDocs, } from '../../Firebase/firebaseConfig'
+import { useStore } from '../store/store'
 
 
 
-const Despesa = () => {
+const Despesa = ({navigation}) => {
+
+  const avaliableKey = (amount) => {
+    if (amount === '1') {
+      navigation.push('Informations');
+    }
+  }
+
+  const addToDespesas = useStore(state => state.addToDespesas)
+  const ListaDespesas = useStore(state => state.ListaDespesas)
+  // const cleanListaDespesas = useStore(state => state.cleanListaDespesas)
   const HandlePress = () => {
     Keyboard.dismiss();
   }
@@ -33,35 +43,22 @@ const Despesa = () => {
     'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
   ];
 
-  const getNextDespesaNumber = async () => {  // Função para buscar o próximo número de despesa
-    const despesasCollection = collection(db, "bdHildaFinance");
-    const despesasSnapshot = await getDocs(despesasCollection);
-    const despesaNumber = despesasSnapshot.size + 1; // Próximo número de despesa
-    return despesaNumber;
-  }
-
-  const addItemBD = async () => { // Função para adicionar um item no banco de dados
-    try {
-      if(amount === 'R$ 0,00'){ // Verifica se o valor é válido, ou seja, diferente de zero
-         notification(`Insira um valor.`)
+  const addItemBD = () => { // Função para adicionar um item ao Array Despesa
+      if (amount === 'R$ 0,00') { // Verifica se o valor é válido, ou seja, diferente de zero
+        notification(`Insira um valor.`)
         return;
       }
-      const despesaNumber = await getNextDespesaNumber(); // Busca o próximo número de despesa
-      const despesaDocumentName = `despesa${despesaNumber}`;  // Nome do documento
-      const despesaDocRef = doc(collection(db, "bdHildaFinance"), despesaDocumentName); // Referência do documento
       const dataAtual = new Date();
       const numericAmount = amount.replace(/[^0-9]/g, '') / 100;  // Converte para número e divide por 100
-
-      await setDoc(despesaDocRef, { // Adiciona o item no banco de dados
+      const item = {
         date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`,
         month: nomesDosMeses[new Date().getMonth()],
         value: numericAmount
-      });
+      }
+      addToDespesas(item)
       setAmount('R$ 0,00'); // Reseta o valor do input
       notification(`Despesa de ${numericAmount} gravado.`)
-    } catch (e) {
-      notification("Error ao adicionar documento");
-    }
+      // console.log(ListaDespesas)
   }
 
   const notification = (message) => { 
@@ -71,10 +68,12 @@ const Despesa = () => {
     );
   }
 
+  useEffect(() => {}, [ListaDespesas]);
+
   return (
     <Pressable onPress={HandlePress} style={styles.container}>
       <View style={styles.headerBar}>
-        <HeaderBar />
+        <HeaderBar avaliableKey={avaliableKey}/>
       </View>
       <View style={styles.title}>
         <Text style={styles.text}>Cadastro de Despesas</Text>
@@ -172,3 +171,35 @@ const styles = StyleSheet.create({
 })
 
 export default Despesa
+
+
+// const getNextDespesaNumber = async () => {  // Função para buscar o próximo número de despesa
+//   const despesasCollection = collection(db, "bdHildaFinance");
+//   const despesasSnapshot = await getDocs(despesasCollection);
+//   const despesaNumber = despesasSnapshot.size + 1; // Próximo número de despesa
+//   return despesaNumber;
+// }
+
+// const addItemBD = async () => { // Função para adicionar um item no banco de dados
+//   try {
+//     if(amount === 'R$ 0,00'){ // Verifica se o valor é válido, ou seja, diferente de zero
+//        notification(`Insira um valor.`)
+//       return;
+//     }
+//     const despesaNumber = await getNextDespesaNumber(); // Busca o próximo número de despesa
+//     const despesaDocumentName = `despesa${despesaNumber}`;  // Nome do documento
+//     const despesaDocRef = doc(collection(db, "bdHildaFinance"), despesaDocumentName); // Referência do documento
+//     const dataAtual = new Date();
+//     const numericAmount = amount.replace(/[^0-9]/g, '') / 100;  // Converte para número e divide por 100
+
+//     await setDoc(despesaDocRef, { // Adiciona o item no banco de dados
+//       date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`,
+//       month: nomesDosMeses[new Date().getMonth()],
+//       value: numericAmount
+//     });
+//     setAmount('R$ 0,00'); // Reseta o valor do input
+//     notification(`Despesa de ${numericAmount} gravado.`)
+//   } catch (e) {
+//     notification("Error ao adicionar documento");
+//   }
+// }
