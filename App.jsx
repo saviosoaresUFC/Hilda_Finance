@@ -6,19 +6,22 @@ import * as SplashScreen from 'expo-splash-screen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './src/navigators/TabNavigator';
 import useLoadFonts from './src/hooks/useLoadFonts';
-// import Toast from 'react-native-toast-message';
+import Informations from './src/screens/Informations';
+import { StackedBarChart } from 'react-native-svg-charts'
 
 const Stack = createNativeStackNavigator();
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
-  useEffect(() => { 
+
+  useEffect(() => {
     SplashScreen.hideAsync();
   }, []);
 
   const { fontsLoaded, onLayoutRootView } = useLoadFonts();
   if (!fontsLoaded)
     return null;
+
   return (
     <NavigationContainer>
       <StatusBar style="light" />
@@ -27,6 +30,11 @@ export default function App() {
           name='Tab'
           component={TabNavigator}
           options={{ animation: 'slide_from_bottom' }}>
+        </Stack.Screen>
+        <Stack.Screen
+          name='Informations'
+          component={Informations}
+          options={{ animation: 'slide_from_bottom', header: () => <HeaderBar navigation={navigation} />  }}>
         </Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
