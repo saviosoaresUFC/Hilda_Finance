@@ -14,7 +14,7 @@
   };
 
   interface Icon {
-    avatarsavio: any;
+    avatarhylda: any;
     acquisition: any;
     cart: any;
     report: any;
@@ -27,7 +27,7 @@
   }
 
   export const ICONS: Icon = {
-    avatarsavio: require('../../img/avatarsavio.jpg'),
+    avatarhylda: require('../../img/avatarhylda.png'),
     acquisition: require('../../img/acquisition.png'),
     cart: require('../../img/cart.png'),
     report: require('../../img/report.png'),
