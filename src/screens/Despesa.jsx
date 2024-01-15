@@ -4,24 +4,28 @@ import HeaderBar from '../components/HeaderBar'
 import { Ionicons } from '@expo/vector-icons'
 import { COLORS } from '../theme/theme'
 import { useStore } from '../store/store'
+import ModalConfirm from '../components/ModalConfirm'
 
 
 
 const Despesa = ({navigation}) => {
+  const [modalVisible, setModalVisible] = useState(false);
 
   const avaliableKey = (amount) => {
     if (amount === '1') {
-      navigation.push('Informations');
+      navigation.push('Blocked');
     }
   }
 
   const addToDespesas = useStore(state => state.addToDespesas)
   const ListaDespesas = useStore(state => state.ListaDespesas)
-  // const cleanListaDespesas = useStore(state => state.cleanListaDespesas)
+
   const HandlePress = () => {
     Keyboard.dismiss();
   }
+
   const [amount, setAmount] = useState('R$ 0,00');
+
   const handleAmountChange = (text) => {
     const numericInput = text.replace(/[^0-9]/g, ''); // Remove todos os caracteres não numéricos
     const formattedAmount = formatCurrency(numericInput); // Formata o valor monetário
@@ -89,7 +93,7 @@ const Despesa = ({navigation}) => {
           value={amount}
           onChangeText={handleAmountChange}
           onSubmitEditing={() => {
-            addItemBD();
+            // addItemBD();
             Keyboard.dismiss();
           }
           }
@@ -99,7 +103,8 @@ const Despesa = ({navigation}) => {
         <TouchableOpacity
           style={styles.buttonAdd}
           onPress={() => {
-            addItemBD();
+            setModalVisible(true);
+            // addItemBD();
             Keyboard.dismiss();
           }
           }
@@ -107,13 +112,20 @@ const Despesa = ({navigation}) => {
           <Ionicons name='ios-add' style={styles.icon} />
         </TouchableOpacity>
       </View>
+      {modalVisible && <ModalConfirm 
+      modal={modalVisible} 
+      setModal={setModalVisible} 
+      text={`Deseja adicionar uma despesa no valor de ${amount}?`}
+      apagar={false}
+      addItemBD={addItemBD}
+      />}
     </Pressable>
   )
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#C2C2C2',
+    backgroundColor: COLORS.gray,
     height: '100%',
   },
   headerBar: {
@@ -171,35 +183,3 @@ const styles = StyleSheet.create({
 })
 
 export default Despesa
-
-
-// const getNextDespesaNumber = async () => {  // Função para buscar o próximo número de despesa
-//   const despesasCollection = collection(db, "bdHildaFinance");
-//   const despesasSnapshot = await getDocs(despesasCollection);
-//   const despesaNumber = despesasSnapshot.size + 1; // Próximo número de despesa
-//   return despesaNumber;
-// }
-
-// const addItemBD = async () => { // Função para adicionar um item no banco de dados
-//   try {
-//     if(amount === 'R$ 0,00'){ // Verifica se o valor é válido, ou seja, diferente de zero
-//        notification(`Insira um valor.`)
-//       return;
-//     }
-//     const despesaNumber = await getNextDespesaNumber(); // Busca o próximo número de despesa
-//     const despesaDocumentName = `despesa${despesaNumber}`;  // Nome do documento
-//     const despesaDocRef = doc(collection(db, "bdHildaFinance"), despesaDocumentName); // Referência do documento
-//     const dataAtual = new Date();
-//     const numericAmount = amount.replace(/[^0-9]/g, '') / 100;  // Converte para número e divide por 100
-
-//     await setDoc(despesaDocRef, { // Adiciona o item no banco de dados
-//       date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`,
-//       month: nomesDosMeses[new Date().getMonth()],
-//       value: numericAmount
-//     });
-//     setAmount('R$ 0,00'); // Reseta o valor do input
-//     notification(`Despesa de ${numericAmount} gravado.`)
-//   } catch (e) {
-//     notification("Error ao adicionar documento");
-//   }
-// }
