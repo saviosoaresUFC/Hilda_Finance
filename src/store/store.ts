@@ -89,6 +89,28 @@ export const useStore = create(
                         }
                     }),
                 ),
+            removeFromVendas: (venda: any) =>  // Remove uma venda da lista de vendas
+                set(
+                    produce(state => {
+                        for (let i = 0; i < state.ListaVendas.length; i++) {   // Percorre a lista de vendas
+                            if (state.ListaVendas[i].id == venda.id && state.ListaVendas[i].date == venda.date) {   // Verifica se a venda é a mesma que a venda a ser removida
+                                state.ListaVendas.splice(i, 1);    // Remove a venda da lista de vendas
+                                break;  // Para o loop
+                            }
+                        }
+                    }),
+                ),
+            removeFromDespesas: (despesa: any) =>  // Remove uma despesa da lista de despesas
+                set(
+                    produce(state => {
+                        for (let i = 0; i < state.ListaDespesas.length; i++) {   // Percorre a lista de despesas
+                            if (state.ListaDespesas[i].id == despesa.id && state.ListaDespesas[i].date == despesa.date) {   // Verifica se a despesa é a mesma que a despesa a ser removida
+                                state.ListaDespesas.splice(i, 1);    // Remove a despesa da lista de despesas
+                                break;  // Para o loop
+                            }
+                        }
+                    }),
+                ),
         }),
         {
             name: 'Hilda_Finance',  // Nome do Storage
