@@ -6,7 +6,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import TabNavigator from './src/navigators/TabNavigator';
 import useLoadFonts from './src/hooks/useLoadFonts';
-import Informations from './src/screens/Informations';
+import Blocked from './src/screens/Blocked';
 import { StackedBarChart } from 'react-native-svg-charts'
 
 const Stack = createNativeStackNavigator();
@@ -32,8 +32,8 @@ export default function App() {
           options={{ animation: 'slide_from_bottom' }}>
         </Stack.Screen>
         <Stack.Screen
-          name='Informations'
-          component={Informations}
+          name='Blocked'
+          component={Blocked}
           options={{ animation: 'slide_from_bottom', header: () => <HeaderBar navigation={navigation} />  }}>
         </Stack.Screen>
       </Stack.Navigator>
