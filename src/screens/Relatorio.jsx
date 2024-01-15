@@ -13,7 +13,7 @@ const Relatorio = ({ navigation }) => {
 
   const avaliableKey = (amount) => {
     if (amount === '1') {
-      navigation.push('Informations');
+      navigation.push('Blocked');
     }
   }
 
@@ -48,11 +48,11 @@ const Relatorio = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#C2C2C2',
+    backgroundColor: COLORS.gray,
     marginBottom: '-30%',
   },
   headerBar: {
-    height: '6.5%',
+    height: '5.6%',
   },
   title: {
     justifyContent: 'center',
@@ -74,7 +74,6 @@ const styles = StyleSheet.create({
     padding: '4%',
   },
   graficLM: {
-    // marginBottom: '50%',
     height: '100%',
     padding: '4%',
     top: '0.5%',
