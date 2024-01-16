@@ -8,6 +8,8 @@ import TabNavigator from './src/navigators/TabNavigator';
 import useLoadFonts from './src/hooks/useLoadFonts';
 import Blocked from './src/screens/Blocked';
 import { StackedBarChart } from 'react-native-svg-charts'
+import Edition from './src/screens/Edition';
+
 
 const Stack = createNativeStackNavigator();
 SplashScreen.preventAutoHideAsync();
@@ -34,6 +36,11 @@ export default function App() {
         <Stack.Screen
           name='Blocked'
           component={Blocked}
+          options={{ animation: 'slide_from_bottom', header: () => <HeaderBar navigation={navigation} />  }}>
+        </Stack.Screen>
+        <Stack.Screen
+          name='Edition'
+          component={Edition}
           options={{ animation: 'slide_from_bottom', header: () => <HeaderBar navigation={navigation} />  }}>
         </Stack.Screen>
       </Stack.Navigator>
