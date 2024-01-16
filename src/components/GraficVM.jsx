@@ -144,14 +144,13 @@ const GraficVM = () => {
                     data={dataVM}
                     showGrid={true}
                     contentInset={{ top: 0, bottom: 10 }}
-                // valueAcessor={({ item, key }) => item[key]}
                 >
                     <Grid />
                 </StackedBarChart>
                 <YAxis
                     style={styles.yAxis}
                     data={dataVM.map((item) => item.SkewerSimple + item.SkewerComplete + item.Hamburguer + item.Food + item.Drink)}
-                    contentInset={{ top: 10, bottom: 8 }}
+                    contentInset={{ top: 4, bottom: 8 }}
                     svg={{
                         fontSize: 10,
                         fill: 'black',
@@ -172,7 +171,7 @@ const GraficVM = () => {
 
 const styles = StyleSheet.create({
     footer: {
-        top: '3%',
+        top: '4%',
         right: '1.5%',
         marginBottom: '4%',
     },
