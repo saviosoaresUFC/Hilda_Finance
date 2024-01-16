@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, View, TouchableOpacity } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, View, TouchableOpacity, Modal } from 'react-native'
 import { BarChart, Grid } from 'react-native-svg-charts'
 import { Text } from 'react-native-svg'
 import { useStore } from '../store/store'
@@ -7,12 +7,14 @@ import Meses from './Meses'
 import { LinearGradient, Stop, Defs } from 'react-native-svg'
 import { COLORS } from '../theme/theme'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
+import ModalConfirm from './ModalConfirm'
 
 const GraficLM = () => {
     const ListaVendas = useStore((state) => state.ListaVendas)
     const ListaDespesas = useStore((state) => state.ListaDespesas)
     const cleanListaVendas = useStore((state) => state.cleanListaVendas)
     const cleanListaDespesas = useStore((state) => state.cleanListaDespesas)
+    const [modal, setModal] = useState(false)
 
     const dataLM = [calcularLV("Janeiro"), calcularLV("Fevereiro"), calcularLV("Março"),
     calcularLV("Abril"), calcularLV("Maio"), calcularLV("Junho"),
@@ -23,7 +25,7 @@ const GraficLM = () => {
         data.map((value, index) => {
             const roundedValue = Number.isInteger(value) ? value : value.toFixed(2);
             const yPos = value < 20 ? y(value) - 10 : y(value) + 15;
-            console.log(value)
+            // console.log(value)
             return (
                 <Text
                     key={index}
@@ -81,14 +83,22 @@ const GraficLM = () => {
             <Meses />
             <View style={styles.viewButton}>
                 <TouchableOpacity style={styles.buttonClean}
-                    onPress={() => { 
-                        cleanListaVendas()
-                        cleanListaDespesas()
-                     }}>
+                    onPress={() => {
+                        setModal(!modal)
+                    }}>
                     <MaterialCommunityIcons name="broom" size={24} color="black" />
                     <MaterialCommunityIcons name="alert" size={24} color="black" />
                 </TouchableOpacity>
             </View>
+            {modal ? (
+                <ModalConfirm modal={modal} setModal={setModal}
+                    cleanListaVendas={cleanListaVendas}
+                    cleanListaDespesas={cleanListaDespesas}
+                    text={"Voce deseja apagar todos os dados do ANO?"}
+                    apagar={true}
+                />
+            ) : null
+            }
         </View>
     )
 }
@@ -101,7 +111,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '6%',
         alignItems: 'flex-end',
-        marginBottom: '50%',       
+        marginBottom: '50%',
 
     },
     buttonClean: {
@@ -118,6 +128,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontFamily: 'Inter-Black',
     },
+
 })
 
 export default GraficLM
