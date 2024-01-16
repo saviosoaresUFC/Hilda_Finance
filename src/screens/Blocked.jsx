@@ -1,82 +1,120 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { StyleSheet, View, TouchableOpacity, Text, ScrollView } from 'react-native'
 import { COLORS } from '../theme/theme'
 import { useStore } from '../store/store'
 import { Octicons } from '@expo/vector-icons'
+import ModalConfirm from '../components/ModalConfirm'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+
 
 const Blocked = () => {
   const ListaVendas = useStore(state => state.ListaVendas)
   const ListaDespesas = useStore(state => state.ListaDespesas)
   const removeFromVendas = useStore(state => state.removeFromVendas)
   const removeFromDespesas = useStore(state => state.removeFromDespesas)
-  // console.log(ListaDespesas)
+  const cleanListaVendas = useStore((state) => state.cleanListaVendas)
+  const cleanListaDespesas = useStore((state) => state.cleanListaDespesas)
+
+  const [modal, setModal] = useState(false)
+
+  let newListaVendas = []
+  function countItensRepetidos() {
+    ListaVendas.forEach((item) => {
+      const index = newListaVendas.findIndex((itemAux) => itemAux.id === item.id);
+      if (index === -1) {
+        newListaVendas.push({ id: item.id, product: item.product, value: item.value, date: item.date, quantity: 1 });
+      } else {
+        newListaVendas[index].quantity += 1;
+      }
+    });
+    return newListaVendas;
+  }
+  countItensRepetidos()
 
   return (
-    <View style={styles.body}>
-      <View style={styles.container}>
-        <ScrollView style={[styles.scrollView, {width: '120%'}]} >
-          <View>
-            <Text style={styles.tittle}>Vendas</Text>
-            {ListaVendas.map((item, index) => {
-              return (
-                <View key={index} style={styles.itens}>
-                  <TouchableOpacity
-                    style={styles.buttonRemove}
-                  onPress={() => removeFromVendas(item)}
-                  >
-                    <Octicons name="trash" size={24} color="black" />
-                  </TouchableOpacity>
-                  <View style={styles.viewName}>
-                    <Text style={styles.text}>{`${item.product}`}</Text>
+    <>
+      <View style={styles.body}>
+        <View style={styles.container}>
+          <ScrollView style={[styles.scrollView, { width: '120%' }]} >
+            <View>
+              <Text style={styles.tittle}>Vendas</Text>
+              {newListaVendas.map((item, index) => {
+                return (
+                  <View key={index} style={styles.itens}>
+                    <TouchableOpacity
+                      style={styles.buttonRemove}
+                      onPress={() => removeFromVendas(item)}
+                    >
+                      <Octicons name="trash" size={24} color="black" />
+                    </TouchableOpacity>
+                    <View style={styles.viewQuantity}>
+                      <Text style={styles.text}>{`${item.quantity}x`}</Text>
+                    </View>
+                    <View style={styles.viewName}>
+                      <Text style={styles.text}>{`${item.product}`}</Text>
+                    </View>
+                    <View style={styles.viewValue}>
+                      <Text style={styles.text}>{`R$ ${item.value * item.quantity}`}</Text>
+                    </View>
+                    <View style={styles.viewDate}>
+                      <Text style={styles.text}>{`${item.date}`}</Text>
+                    </View>
                   </View>
-                  <View style={styles.viewValue}>
-                    <Text style={styles.text}>{`R$ ${item.value}`}</Text>
+                )
+              })}
+            </View>
+          </ScrollView>
+        </View>
+        <View style={[styles.container, { width: '50%', marginLeft: '8%' }]}>
+          <ScrollView style={[styles.scrollView, { backgroundColor: COLORS.grayescuro }]}>
+            <View>
+              <Text style={styles.tittle}>Despesas</Text>
+              {ListaDespesas.map((item, index) => {
+                return (
+                  <View key={index} style={styles.itens}>
+                    <TouchableOpacity
+                      style={styles.buttonRemove}
+                      onPress={() => removeFromDespesas(item)}
+                    >
+                      <Octicons name="trash" size={24} color="black" />
+                    </TouchableOpacity>
+                    <View style={styles.viewValue}>
+                      <Text style={styles.text}>{`R$ ${item.value}`}</Text>
+                    </View>
+                    <View style={[styles.viewDate, { width: '54%' }]}>
+                      <Text style={styles.text}>{`${item.date}`}</Text>
+                    </View>
                   </View>
-                  <View style={styles.viewDate}>
-                    <Text style={styles.text}>{`${item.date}`}</Text>
-                  </View>
-                </View>
-              )
-            })}
-          </View>
-        </ScrollView>
+                )
+              })}
+            </View>
+          </ScrollView>
+        </View>
       </View>
-      <View style={[styles.container, {width: '50%', marginLeft: '8%'}]}>
-        <ScrollView style={[styles.scrollView, { backgroundColor: COLORS.grayescuro }]}>
-          <View>
-            <Text style={styles.tittle}>Despesas</Text>
-            {ListaDespesas.map((item, index) => {
-              return (
-                <View key={index} style={styles.itens}>
-                  <TouchableOpacity
-                    style={styles.buttonRemove}
-                  onPress={() => removeFromDespesas(item)}
-                  >
-                    <Octicons name="trash" size={24} color="black" />
-                  </TouchableOpacity>
-                  <View style={styles.viewValue}>
-                    <Text style={styles.text}>{`R$ ${item.value}`}</Text>
-                  </View>
-                  <View style={[styles.viewDate, { width: '54%' }]}>
-                    <Text style={styles.text}>{`${item.date}`}</Text>
-                  </View>
-                </View>
-              )
-            })}
-          </View>
-        </ScrollView>
+      <View style={styles.viewButton}>
+        <TouchableOpacity style={styles.buttonClean}
+          onPress={() => {
+            setModal(!modal)
+          }}>
+          <MaterialCommunityIcons name="broom" size={24} color="black" />
+          <MaterialCommunityIcons name="alert" size={24} color="black" />
+        </TouchableOpacity>
       </View>
-    </View>
+      {modal ? (
+        <ModalConfirm modal={modal} setModal={setModal}
+          cleanListaVendas={cleanListaVendas}
+          cleanListaDespesas={cleanListaDespesas}
+          text={"Voce deseja apagar todos os dados do ANO?"}
+          apagar={true}
+        />
+      ) : null
+      }
+    </>
   )
 }
 
 const styles = StyleSheet.create({
-  body: {
-    top: '8%',
-    flexDirection: 'row',
-    marginBottom: '8%',
 
-  },
   container: {
     backgroundColor: COLORS.grayescuro,
     width: '50%',
@@ -115,14 +153,51 @@ const styles = StyleSheet.create({
     marginRight: '4%',
   },
   viewDate: {
-    width: '40%',
+    width: '30%',
     alignItems: 'flex-end',
+    borderLeftColor: COLORS.orange,
+    borderLeftWidth: 1,
   },
   viewName: {
     width: '30%',
     alignItems: 'flex-start',
+    borderRightColor: COLORS.orange,
+    borderRightWidth: 1,
+  },
+  viewQuantity: {
+    width: '8%',
+    alignItems: 'flex-start',
+  },
+  viewValue: {
+    width: '16%',
+    alignItems: 'center',
   },
 
+  body: {
+    top: '8%',
+    height: '80%',
+    flexDirection: 'row',
+    marginBottom: '10%',
+  },
+
+  viewButton: {
+    width: '100%',
+    height: '6%',
+    alignItems: 'center',
+  },
+  buttonClean: {
+    flexDirection: 'row',
+    width: '90%',
+    height: '100%',
+    backgroundColor: '#ff0000',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  textButton: {
+    fontSize: 16,
+    fontFamily: 'Inter-Black',
+  },
 })
 
 export default Blocked
