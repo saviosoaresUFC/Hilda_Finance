@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, Keyboard, Pressable, ToastAndroid } from 'react-native'
+import {
+  StyleSheet, Text, View, TextInput,
+  TouchableOpacity, Keyboard, Pressable,
+  ToastAndroid, Image
+} from 'react-native'
 import HeaderBar from '../components/HeaderBar'
 import { Ionicons } from '@expo/vector-icons'
-import { COLORS } from '../theme/theme'
+import { COLORS, ICONS } from '../theme/theme'
 import { useStore } from '../store/store'
 import ModalConfirm from '../components/ModalConfirm'
 
 
 
-const Despesa = ({navigation}) => {
+const Despesa = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const avaliableKey = (amount) => {
@@ -48,42 +52,42 @@ const Despesa = ({navigation}) => {
   ];
 
   const addItemBD = () => { // Função para adicionar um item ao Array Despesa
-      if (amount === 'R$ 0,00') { // Verifica se o valor é válido, ou seja, diferente de zero
-        notification(`Insira um valor.`)
-        return;
-      }
-      const dataAtual = new Date();
-      const numericAmount = amount.replace(/[^0-9]/g, '') / 100;  // Converte para número e divide por 100
-      const item = {
-        date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`,
-        month: nomesDosMeses[new Date().getMonth()],
-        value: numericAmount
-      }
-      addToDespesas(item)
-      setAmount('R$ 0,00'); // Reseta o valor do input
-      notification(`Despesa de ${numericAmount} gravado.`)
-      // console.log(ListaDespesas)
+    if (amount === 'R$ 0,00') { // Verifica se o valor é válido, ou seja, diferente de zero
+      notification(`Insira um valor.`)
+      return;
+    }
+    const dataAtual = new Date();
+    const numericAmount = amount.replace(/[^0-9]/g, '') / 100;  // Converte para número e divide por 100
+    const item = {
+      date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`,
+      month: nomesDosMeses[new Date().getMonth()],
+      value: numericAmount
+    }
+    addToDespesas(item)
+    setAmount('R$ 0,00'); // Reseta o valor do input
+    notification(`Despesa de ${numericAmount} gravado.`)
+    // console.log(ListaDespesas)
   }
 
-  const notification = (message) => { 
+  const notification = (message) => {
     ToastAndroid.showWithGravity(message,
       ToastAndroid.SHORT,
       ToastAndroid.CENTER
     );
   }
 
-  useEffect(() => {}, [ListaDespesas]);
+  useEffect(() => { }, [ListaDespesas]);
 
   return (
     <Pressable onPress={HandlePress} style={styles.container}>
       <View style={styles.headerBar}>
-        <HeaderBar avaliableKey={avaliableKey}/>
+        <HeaderBar avaliableKey={avaliableKey} />
       </View>
       <View style={styles.title}>
         <Text style={styles.text}>Cadastro de Despesas</Text>
       </View>
       <View style={styles.titleGastos}>
-        <Text style={styles.textGasto}>Quanto foi gasto?</Text>
+        <Text style={styles.textGasto}>Quanto foi gasto em compras?</Text>
       </View>
       <View style={styles.containerInput}>
         <TextInput
@@ -104,7 +108,6 @@ const Despesa = ({navigation}) => {
           style={styles.buttonAdd}
           onPress={() => {
             setModalVisible(true);
-            // addItemBD();
             Keyboard.dismiss();
           }
           }
@@ -112,12 +115,18 @@ const Despesa = ({navigation}) => {
           <Ionicons name='ios-add' style={styles.icon} />
         </TouchableOpacity>
       </View>
-      {modalVisible && <ModalConfirm 
-      modal={modalVisible} 
-      setModal={setModalVisible} 
-      text={`Deseja adicionar uma despesa no valor de ${amount}?`}
-      apagar={false}
-      addItemBD={addItemBD}
+      <View style={styles.viewImg}>
+        <Image
+          source={ICONS.street_shop}
+          style={styles.img}
+        />
+      </View>
+      {modalVisible && <ModalConfirm
+        modal={modalVisible}
+        setModal={setModalVisible}
+        text={`Deseja adicionar uma despesa no valor de ${amount}?`}
+        apagar={false}
+        addItemBD={addItemBD}
       />}
     </Pressable>
   )
@@ -143,9 +152,10 @@ const styles = StyleSheet.create({
   titleGastos: {
     justifyContent: 'center',
     marginTop: '6%',
+    width: '100%',
   },
   textGasto: {
-    fontSize: 24,
+    fontSize: 22,
     marginLeft: '4.5%',
     fontFamily: 'Poppins-Regular',
   },
@@ -179,6 +189,17 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 64,
     color: 'black',
+  },
+  viewImg: {
+    height: '40%',
+
+    justifyContent: 'center',
+    alignItems: 'center',
+    // backgroundColor: COLORS.grayescuro,
+  },
+  img: {
+    height: '100%',
+    width: '100%',
   },
 })
 
