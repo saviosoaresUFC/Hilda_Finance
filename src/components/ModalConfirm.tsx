@@ -12,10 +12,11 @@ interface ModalConfirmProps {
   text: string
   apagar: boolean
   addItemBD?: any
+  navigation?: any
 }
 
 const ModalConfirm: React.FC<ModalConfirmProps> = ({
-  modal, setModal, cleanListaVendas, cleanListaDespesas, text, apagar, addItemBD
+  modal, setModal, cleanListaVendas, cleanListaDespesas, text, apagar, addItemBD, navigation
 }) => {
   return (
     <Modal
@@ -38,7 +39,10 @@ const ModalConfirm: React.FC<ModalConfirmProps> = ({
                 if (apagar) {
                   cleanListaVendas()
                   cleanListaDespesas()
-                }else{
+                }if(apagar == null){
+                  navigation()
+                }
+                else{
                   addItemBD()
                 }
               }
