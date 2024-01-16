@@ -66,28 +66,26 @@ const Blocked = () => {
           </ScrollView>
         </View>
         <View style={[styles.container, { width: '50%', marginLeft: '8%' }]}>
+          <Text style={styles.tittle}>Despesas</Text>
           <ScrollView style={[styles.scrollView, { backgroundColor: COLORS.grayescuro }]}>
-            <View>
-              <Text style={styles.tittle}>Despesas</Text>
-              {ListaDespesas.map((item, index) => {
-                return (
-                  <View key={index} style={styles.itens}>
-                    <TouchableOpacity
-                      style={styles.buttonRemove}
-                      onPress={() => removeFromDespesas(item)}
-                    >
-                      <Octicons name="trash" size={24} color="black" />
-                    </TouchableOpacity>
-                    <View style={styles.viewValue}>
-                      <Text style={styles.text}>{`R$ ${item.value}`}</Text>
-                    </View>
-                    <View style={[styles.viewDate, { width: '54%' }]}>
-                      <Text style={styles.text}>{`${item.date}`}</Text>
-                    </View>
+            {ListaDespesas.map((item, index) => {
+              return (
+                <View key={index} style={styles.itens}>
+                  <TouchableOpacity
+                    style={styles.buttonRemove}
+                    onPress={() => removeFromDespesas(item)}
+                  >
+                    <Octicons name="trash" size={24} color="black" />
+                  </TouchableOpacity>
+                  <View style={[styles.viewValue, {width: '30%'}]}>
+                    <Text style={styles.text}>{`R$ ${item.value}`}</Text>
                   </View>
-                )
-              })}
-            </View>
+                  <View style={[styles.viewDate, { width: '50%' }]}>
+                    <Text style={styles.text}>{`${item.date}`}</Text>
+                  </View>
+                </View>
+              )
+            })}
           </ScrollView>
         </View>
       </View>
