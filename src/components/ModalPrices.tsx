@@ -3,12 +3,12 @@ import { BlurView } from 'expo-blur'
 import {
     StyleSheet, Text, View,
     Modal, TouchableOpacity, ScrollView,
-    Pressable, ToastAndroid
+    Pressable, ToastAndroid, Image
 } from 'react-native'
-import { COLORS } from '../theme/theme';
+import { COLORS, ICONS } from '../theme/theme';
 import { Octicons } from '@expo/vector-icons';
 import { useStore } from '../store/store';
-// import { collection, db, getDocs, doc, setDoc } from '../../Firebase/firebaseConfig';
+import ModalConfirm from './ModalConfirm';
 
 interface ModalPricesProps {
     buttonPressHandler: any;
@@ -31,34 +31,34 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
     addToVendas, // função que adiciona a lista de vendas
     cleanListaVendas, // função que limpa a lista de vendas
 }) => {
-
+    const [modal, setModal] = useState(false);
     const nomesDosMeses = [
         'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
         'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
     ];
 
     const addItemBD = () => {
-            if (CartList.length === 0) {
-                buttonPressHandler();
-                return; // Se não houver itens na lista, não faz nada
-            }
-            CartList.forEach((item) => {
-                const itemFinal = {
-                    date: `${new Date().toLocaleDateString("pt-BR")} ${new Date().toLocaleTimeString("pt-BR")}`,
-                    id: item.id,
-                    month: nomesDosMeses[new Date().getMonth()],
-                    product: item.name,
-                    type: item.type,
-                    value: parseFloat(item.ItemPrice.replace("R$ ", "").replace(",", ".")),
-                };
-                addToVendas(itemFinal);
-                notification(`${item.name} gravado.`);
-            });
-            cleanCartList();
-            console.log("ListaVendas: ", ListaVendas);
+        if (CartList.length === 0) {
+            buttonPressHandler();
+            return; // Se não houver itens na lista, não faz nada
+        }
+        CartList.forEach((item) => {
+            const itemFinal = {
+                date: `${new Date().toLocaleDateString("pt-BR")} ${new Date().toLocaleTimeString("pt-BR")}`,
+                id: item.id,
+                month: nomesDosMeses[new Date().getMonth()],
+                product: item.name,
+                type: item.type,
+                value: parseFloat(item.ItemPrice.replace("R$ ", "").replace(",", ".")),
+            };
+            addToVendas(itemFinal);
+            notification(`${item.name} gravado.`);
+        });
+        cleanCartList();
+        console.log("ListaVendas: ", ListaVendas);
     }
 
-    useEffect(() => {}, [ListaVendas]);
+    useEffect(() => { }, [ListaVendas]);
 
     const notification = (message: string) => {
         ToastAndroid.showWithGravity(message,
@@ -67,6 +67,21 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
         );
     }
 
+    let newCartList = []
+    function countItensRepetidos() {
+        //vetor auxiliar para o CartList, percorra o CartList, se ele estiver repedito cadatra todo o item e a quantidade de vezes que ele aparece no vetor auxiliar
+        CartList.forEach((item) => {
+            const index = newCartList.findIndex((itemAux) => itemAux.id === item.id);
+            if (index === -1) {
+                newCartList.push({ id: item.id, name: item.name, ItemPrice: item.ItemPrice, type: item.type, quantity: 1 });
+            } else {
+                newCartList[index].quantity += 1;
+            }
+        });
+        return newCartList;
+    }
+    countItensRepetidos();
+
     return (
         <>
             <Modal
@@ -74,17 +89,38 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                 animationType="slide"
                 transparent={true}
                 presentationStyle='overFullScreen'
-
             >
                 <BlurView onTouchStart={buttonPressHandler} style={StyleSheet.absoluteFill} intensity={36} tint="dark" />
-                <TouchableOpacity onPress={buttonPressHandler} style={{ flex: 1 }} />
+                <View style={styles.viewImg}>
+                    <Image
+                        source={ICONS.hamburguerBack}
+                    />
+                </View>
+                <TouchableOpacity onPress={buttonPressHandler} />
                 {/* Fechar o Modal */}
                 <ScrollView
                     showsVerticalScrollIndicator={false}
-                    style={[styles.scrollView, { top: (CartList.length === 0 ? '30%' : '17%') }]}
+                    style={{
+                        marginTop:
+                            (newCartList.length == 7 ? '15%' : (
+                                (newCartList.length == 6 ? '28%' : (
+                                    (newCartList.length == 5 ? '42%' : (
+                                        (newCartList.length == 4 ? '54.8%' : (
+                                            (newCartList.length == 3 ? '68%' : (
+                                                newCartList.length == 2 ? '80%' : (
+                                                    (newCartList.length == 1 ? '92.8%' : (
+                                                        (newCartList.length == 0 ? '105.8%' : '24%')
+                                                    ))
+                                                ))
+                                            ))
+                                        ))
+                                    )
+                                ))
+                            ))
+                    }}
                 >
                     <View style={styles.modal}>
-                        {CartList.map((item, index) => {
+                        {newCartList.map((item, index) => {
                             if (CartList.length === 0) {
                                 buttonPressHandler()
                             }
@@ -96,10 +132,13 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                                     >
                                         <Octicons name="trash" size={24} color="black" />
                                     </TouchableOpacity>
+                                    <View style={styles.viewQuantity}>
+                                        <Text style={styles.text}>{`${item.quantity}x`}</Text>
+                                    </View>
                                     <View style={styles.viewName}>
                                         <Text style={styles.text}>{`${item.name}`}</Text>
                                     </View>
-                                    <Text style={styles.text}>{`R$ ${item.ItemPrice}`}</Text>
+                                    <Text style={styles.text}>{`R$ ${item.ItemPrice * item.quantity}`}</Text>
                                 </View>
                             )
                         })}
@@ -108,29 +147,43 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                             <Text style={styles.textTotal}>R$ {price}</Text>
                         </View>
                         <TouchableOpacity
-                            onPress={addItemBD}
+                            onPress={setModal.bind(this, true)}
                             style={styles.button}
                         >
                             <Text style={styles.textButton}>Concluir</Text>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
+                <ModalConfirm
+                    modal={modal}
+                    setModal={setModal}
+                    cleanListaVendas={() => { }}
+                    cleanListaDespesas={() => { }}
+                    text={`Deseja gravar os dados? Total: R$ ${price}`}
+                    apagar={false}
+                    addItemBD={addItemBD}
+                />
             </Modal>
         </>
     )
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
-        flex: 1,
-        bottom: '100%',
+    viewImg: {
+        // position: 'absolute',
+        width: '100%',
+        height: '30%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        top: '10%',
     },
     modal: {
         backgroundColor: 'white',
         padding: '4%',
         borderRadius: 8,
-        marginTop: '9%',
-        paddingBottom: '40%',
+        // marginTop: '9%',
+        // paddingBottom: '40%',
+        // backgroundColor: 'blue',
     },
     button: {
         backgroundColor: COLORS.orange,
@@ -160,7 +213,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 8,
+        padding: '4%',
     },
     textTotal: {
         fontSize: 24,
@@ -169,8 +222,13 @@ const styles = StyleSheet.create({
     },
     viewName: {
         flex: 1,
-        left: '76%',
+        left: '50%',
         alignItems: 'flex-start'
+    },
+    viewQuantity: {
+        // flex: 1,
+        left: '20%',
+        alignItems: 'flex-start',
     },
     buttonRemove: {
         backgroundColor: COLORS.grayescuro,
@@ -186,44 +244,3 @@ const styles = StyleSheet.create({
 })
 
 export default ModalPrices
-
-// const getNextVendaNumber = async () => {
-//     const vendasCollection = collection(db, "bdHildaFinance"); // leitura das coleções do database
-//     const vendasSnapshot = await getDocs(vendasCollection); // espera a busca e armazena na variavel
-//     const vendaNumber = vendasSnapshot.size + 1; // Próximo número de venda
-//     return vendaNumber;
-// }
-
-// const addItemBD = async () => { // adiciona o item ao Database
-//     try {
-//         if (CartList.length === 0) {
-//             buttonPressHandler();
-//             return; // Se não houver itens na lista, não faz nada
-//         }
-//         for (let i = 0; i < CartList.length; i++) { // percorre todo o Cart
-//             const item = CartList[i];
-//             const vendaNumber = await getNextVendaNumber();
-//             if (vendaNumber === 28) {   // o Firebase só aceita até 28 dados para a inserção por dia
-//                 notification(`Limite de vendas atingido.`)
-//                 return;
-//             }
-//             const vendaDocumentName = `venda${vendaNumber}`;
-//             const vendaDocRef = doc(collection(db, "bdHildaFinance"), vendaDocumentName);
-//             const dataAtual = new Date();
-
-//             await setDoc(vendaDocRef, {
-//                 id: item.id,
-//                 product: item.name,
-//                 value: parseFloat(item.ItemPrice.replace("R$ ", "").replace(",", ".")),
-//                 type: item.type,
-//                 month: nomesDosMeses[new Date().getMonth()],
-//                 date: `${dataAtual.toLocaleDateString("pt-BR")} ${dataAtual.toLocaleTimeString("pt-BR")}`
-//             });
-//             console.log("Document written with ID: ", vendaDocumentName);
-//             notification(`${item.name} gravado.`)
-//         }
-//         cleanCartList();
-//     } catch (e) {
-//         notification(`Error adding document: ${e}`);
-//     }
-// }
