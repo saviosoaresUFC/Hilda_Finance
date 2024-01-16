@@ -16,6 +16,11 @@ const Relatorio = ({ navigation }) => {
       navigation.push('Blocked');
     }
   }
+  
+  const navigationEdition = (amount) => {
+      navigation.push('Edition');
+  }
+
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
@@ -40,7 +45,7 @@ const Relatorio = ({ navigation }) => {
         <Text style={styles.text}>Lucros Mensais</Text>
       </View>
       <View style={styles.graficLM}>
-        <GraficLM />
+        <GraficLM navigationEdition={navigationEdition} />
       </View>
     </ScrollView>
   );
