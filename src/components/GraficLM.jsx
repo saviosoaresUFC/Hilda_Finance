@@ -6,14 +6,12 @@ import { useStore } from '../store/store'
 import Meses from './Meses'
 import { LinearGradient, Stop, Defs } from 'react-native-svg'
 import { COLORS } from '../theme/theme'
-import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'
 import ModalConfirm from './ModalConfirm'
 
-const GraficLM = () => {
+const GraficLM = ({navigationEdition}) => {
     const ListaVendas = useStore((state) => state.ListaVendas)
     const ListaDespesas = useStore((state) => state.ListaDespesas)
-    const cleanListaVendas = useStore((state) => state.cleanListaVendas)
-    const cleanListaDespesas = useStore((state) => state.cleanListaDespesas)
     const [modal, setModal] = useState(false)
 
     const dataLM = [calcularLV("Janeiro"), calcularLV("Fevereiro"), calcularLV("Março"),
@@ -82,20 +80,20 @@ const GraficLM = () => {
             </BarChart>
             <Meses />
             <View style={styles.viewButton}>
-                <TouchableOpacity style={styles.buttonClean}
+                <TouchableOpacity style={styles.buttonEdition}
                     onPress={() => {
                         setModal(!modal)
                     }}>
-                    <MaterialCommunityIcons name="broom" size={24} color="black" />
-                    <MaterialCommunityIcons name="alert" size={24} color="black" />
+                    <AntDesign name="edit" size={24} color="white" />
                 </TouchableOpacity>
             </View>
             {modal ? (
                 <ModalConfirm modal={modal} setModal={setModal}
-                    cleanListaVendas={cleanListaVendas}
-                    cleanListaDespesas={cleanListaDespesas}
-                    text={"Voce deseja apagar todos os dados do ANO?"}
-                    apagar={true}
+                    cleanListaVendas={() => ({})}
+                    cleanListaDespesas={() => ({})}
+                    text={"Voce deseja editar algum produto?"}
+                    apagar={null}
+                    navigation={navigationEdition}
                 />
             ) : null
             }
@@ -110,15 +108,15 @@ const styles = StyleSheet.create({
     viewButton: {
         width: '100%',
         height: '6%',
-        alignItems: 'flex-end',
+        alignItems: 'center',
         marginBottom: '50%',
 
     },
-    buttonClean: {
+    buttonEdition: {
         flexDirection: 'row',
-        width: '30%',
+        width: '90%',
         height: '100%',
-        backgroundColor: '#ff0000',
+        backgroundColor: COLORS.orange,
         borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
