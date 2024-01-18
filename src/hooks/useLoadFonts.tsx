@@ -6,10 +6,10 @@ import {Inter_900Black, Inter_500Medium, Inter_600SemiBold} from '@expo-google-f
 
 const useLoadFonts = () => {
   const [fontsLoaded] = useFonts({
-    'Poppins-Regular': Poppins_400Regular,
-    'Poppins-Semibold': Poppins_600SemiBold,
-    'Poppins-Medium': Poppins_500Medium,
     'Poppins-Light': Poppins_300Light,
+    'Poppins-Regular': Poppins_400Regular,
+    'Poppins-Medium': Poppins_500Medium,
+    'Poppins-Semibold': Poppins_600SemiBold,
     'Inter-Black': Inter_900Black,
     'Inter-Medium': Inter_500Medium,
     'Inter-Semibold': Inter_600SemiBold,
