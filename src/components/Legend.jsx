@@ -19,7 +19,7 @@ const Legends = () => {
             </View>
             <View style={styles.legendItem}>
                 <View style={[styles.legendIcon, { backgroundColor: colors[3] }]} />
-                <Text style={styles.legendText}>Comida</Text>
+                <Text style={styles.legendText}>Arrumadinho</Text>
             </View>
             <View style={styles.legendItem}>
                 <View style={[styles.legendIcon, { backgroundColor: colors[4] }]} />
