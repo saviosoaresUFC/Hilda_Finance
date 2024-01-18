@@ -29,7 +29,7 @@ const Venda = ({navigation}: any) => {
 
   const avaliableKey = (amount: string) => {
     if (amount === '1') {
-      navigation.push('Informations');
+      navigation.push('Blocked');
     }
   }
 
@@ -108,7 +108,7 @@ const Venda = ({navigation}: any) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#C2C2C2',
+    backgroundColor: COLORS.gray,
   },
   headerBar: {
     height: '9.61%',
