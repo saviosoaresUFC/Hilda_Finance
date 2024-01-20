@@ -104,6 +104,7 @@ const Blocked = () => {
           cleanListaDespesas={cleanListaDespesas}
           text={"Voce deseja apagar todos os dados do ANO?"}
           apagar={true}
+          addItemBD={() => {}}
         />
       ) : null
       }
