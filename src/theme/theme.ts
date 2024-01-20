@@ -26,6 +26,8 @@
     bag: any;
     street_shop: any;
     hamburguerBack: any;
+    emptysale: any;
+    emptyexpense: any;
   }
 
   export const ICONS: Icon = {
@@ -41,5 +43,7 @@
     bag: require('../../img/bag.png'),
     street_shop: require('../../img/street_shop.png'),
     hamburguerBack: require('../../img/hamburguerBack.png'),
+    emptysale: require('../../img/EmptySale.png'),
+    emptyexpense: require('../../img/EmptyExpense.png'),
   };
   
