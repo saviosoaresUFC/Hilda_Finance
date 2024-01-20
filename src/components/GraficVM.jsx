@@ -1,8 +1,6 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
-import { COLORS } from '../theme/theme'
 import { useStore } from '../store/store'
-import { Text } from 'react-native-svg'
 import { StackedBarChart, Grid, YAxis } from 'react-native-svg-charts'
 import Meses from './Meses'
 import Legends from './Legend'
