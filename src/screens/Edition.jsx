@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, TouchableOpacity, Image, ScrollView } from 'react-native'
 import { FontAwesome, Fontisto } from '@expo/vector-icons'
 import { COLORS, ICONS } from '../theme/theme'
 import { useStore } from '../store/store'
 import LottieView from 'lottie-react-native';
-import { Octicons } from '@expo/vector-icons';
+import Octicons from '@expo/vector-icons/Octicons';
 import { BlurView } from 'expo-blur'
 
 const Edition = () => {
@@ -15,6 +15,7 @@ const Edition = () => {
   const ListaVendas = useStore(state => state.ListaVendas);  // Lista de vendas
   const ListaDespesas = useStore(state => state.ListaDespesas);  // Lista de despesas
   const removeFromVendas = useStore(state => state.removeFromVendas);  // Função para remover item da lista de vendas
+  const removeFromDespesas = useStore(state => state.removeFromDespesas);  // Função para remover item da lista de despesas
   let newListaVendas = []
 
   function countItensRepetidos() {
@@ -90,49 +91,89 @@ const Edition = () => {
       {/* SALE LIST */}
       {saleVisible && (
         // SALE LIST NOT EMPTY
-        <View style={styles.viewSaleContainer}>
-          {newListaVendas.map((item, index) => {
-            return (
-              <View key={index} style={styles.viewSaleCard}>
-                <View style={styles.viewSaleButton}>
-                  <TouchableOpacity
-                    style={styles.buttonRemove}
-                    onPress={() => {
-                      setAnimation(true)
-                      removeFromVendas(item)
-                    }}
-                  >
-                    <Octicons name="trash" size={24} color={COLORS.orange} />
-                  </TouchableOpacity>
+        newListaVendas.length == 0 ? (
+          <View style={styles.viewLottie}>
+            <View style={styles.viewTextEmpty}>
+              <Text style={styles.textEmpty}>Não há vendas</Text>
+            </View>
+            <LottieView
+              source={require('../../img/LottieSaleEmpty.json')}
+              autoPlay
+              loop
+            />
+          </View>
+        ) : (
+          <View style={styles.viewSaleContainer}>
+            {newListaVendas.map((item, index) => {
+              return (
+                <View key={index} style={styles.viewSaleCard}>
+                  <View style={styles.viewSaleButton}>
+                    <TouchableOpacity
+                      style={styles.buttonRemove}
+                      onPress={() => {
+                        setAnimation(true)
+                        removeFromVendas(item)
+                      }}
+                    >
+                      <Octicons name="trash" size={24} color={COLORS.orange} />
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.viewSaleText}>
+                    <View style={styles.viewSaleTextName}>
+                      <Text style={styles.textSaleName}>{`${item.product}`}</Text>
+                    </View>
+                    <View style={styles.viewSaleTextQnt}>
+                      <Text style={styles.textSaleQnt}>{`${item.quantity}x`}</Text>
+                    </View>
+                  </View>
                 </View>
-                <View style={styles.viewSaleText}>
-                  <Text style={styles.textSaleName}>{`${item.product}`}</Text>
-                  <Text>{`${item.quantity}`}</Text>
-                </View>
-              </View>
-            )
-          }
-          )}
-        </View>
+              )
+            }
+            )}
+          </View>
+        )
       )}
 
-      {/* EXPENSE LIST */}
-      {expenseVisible && ListaDespesas.length == 0 ? (
-        <View style={styles.viewLottie}>
-          <View style={styles.viewTextEmpty}>
-            <Text style={styles.textEmpty}>Não há despesas</Text>
+      {expenseVisible && (
+        ListaDespesas.length == 0 ? (
+          <View style={styles.viewLottie}>
+            <View style={styles.viewTextEmpty}>
+              <Text style={styles.textEmpty}>Não há despesas</Text>
+            </View>
+            <LottieView
+              source={require('../../img/LottieExpenseEmpty.json')}
+              autoPlay
+              loop
+            />
           </View>
-          <LottieView
-            source={require('../../img/LottieExpenseEmpty.json')}
-            autoPlay
-            loop
-          />
-        </View>
-      ) : (
-        // EXPENSE LIST NOT EMPTY
-        <></>
-      )
-      }
+        ) : (
+          <View style={styles.containerExpense}>
+            <ScrollView style={styles.scrollViewExpense}>
+              {ListaDespesas.slice().reverse().map((item, index) => {
+                return (
+                  <View key={index} style={styles.itensExpense}>
+                    <TouchableOpacity
+                      style={styles.buttonRemoveExpense}
+                      onPress={() => {
+                        setAnimation(true)
+                        removeFromDespesas(item)
+                      }}
+                    >
+                      <Octicons name="trash" size={26} color="white" />
+                    </TouchableOpacity>
+                    <View style={styles.viewExpenseValue}>
+                      <Text style={styles.textExpenseValue}>{`R$ ${item.value}`}</Text>
+                    </View>
+                    <View style={[styles.viewExpenseMonth, { width: '50%' }]}>
+                      <Text style={styles.textExpenseMonth}>{`${item.month}`}</Text>
+                    </View>
+                  </View>
+                )
+              })}
+            </ScrollView>
+          </View>
+        )
+      )}
 
       {animation && (
         <View style={styles.lottie}>
@@ -232,6 +273,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     marginTop: '2%',
   },
+  viewSaleCardExpense: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '90%',
+    height: '6%',
+    borderRadius: 10,
+    // backgroundColor: '#fff',
+    marginTop: '2%',
+  },
   viewSaleButton: {
     alignItems: 'center',
     justifyContent: 'center',
@@ -250,15 +301,47 @@ const styles = StyleSheet.create({
   },
   viewSaleText: {
     alignItems: 'flex-start',
-    justifyContent: 'center',
+    // justifyContent: 'center',
+    flexDirection: 'row',
     width: '80%',
     height: '100%',
-    left: '15%',
+    left: '5%',
+  },
+  viewExpenseText: {
+    alignItems: 'flex-start',
+    // justifyContent: 'center',
+    flexDirection: 'row',
+    width: '80%',
+    height: '100%',
+    left: '5%',
   },
   textSaleName: {
-    fontSize: 18,
+    fontSize: 17,
     fontFamily: 'Inter-Semibold',
     color: COLORS.orange,
+  },
+  viewSaleTextValue: {
+    fontSize: 17,
+    fontFamily: 'Inter-Semibold',
+    color: '#fff',
+  },
+  textSaleQnt: {
+    fontSize: 12,
+    fontFamily: 'Inter-Semibold',
+    color: COLORS.orange,
+    left: '20%',
+  },
+  viewSaleTextName: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    width: '74%',
+    height: '100%',
+  },
+  viewSaleTextQnt: {
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+    width: '18%',
+    height: '100%',
   },
   lottie: {
     position: 'absolute',
@@ -266,6 +349,56 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: '100%',
+  },
+
+
+  // EXPENSE LIST
+  containerExpense: {
+    // backgroundColor: COLORS.gray,
+    width: '100%',
+    height: '78%',
+    marginTop: '14%',
+    marginBottom: '20%',
+  },
+  itensExpense: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: '4%',
+    // backgroundColor: '#fff',
+    marginTop: '2%',
+  },
+  buttonRemoveExpense: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '10%',
+  },
+  viewExpenseValue: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '30%',
+    borderBottomWidth: 4,
+    borderColor: '#fff',
+    borderRadius: 10,
+    padding: '1%',
+  },
+  textExpenseValue: {
+    fontSize: 18,
+    fontFamily: 'Inter-Semibold',
+    color: '#fff',
+  },
+  viewExpenseMonth: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '30%',
+    borderBottomWidth: 4,
+    borderColor: '#fff',
+    borderRadius: 10,
+    padding: '1%',
+  },
+  textExpenseMonth: {
+    fontSize: 18,
+    fontFamily: 'Inter-Semibold',
+    color: '#fff',
   },
 })
 
