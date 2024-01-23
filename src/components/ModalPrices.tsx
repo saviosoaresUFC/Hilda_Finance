@@ -9,6 +9,7 @@ import { COLORS, ICONS } from '../theme/theme';
 import { Octicons } from '@expo/vector-icons';
 import { useStore } from '../store/store';
 import ModalConfirm from './ModalConfirm';
+import LottieView from 'lottie-react-native';
 
 interface ModalPricesProps {
     buttonPressHandler: any;
@@ -91,9 +92,15 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
                 presentationStyle='overFullScreen'
             >
                 <BlurView onTouchStart={buttonPressHandler} style={StyleSheet.absoluteFill} intensity={36} tint="dark" />
-                <View style={styles.viewImg}>
-                    <Image
-                        source={ICONS.hamburguerBack}
+                <View style={styles.viewLottie}>
+                    <LottieView
+                        source={require('../../img/LottieSaleEmpty.json')}
+                        autoPlay
+                        loop
+                        style={{
+                            width: '100%',
+                            height: '100%',
+                        }}
                     />
                 </View>
                 <TouchableOpacity onPress={buttonPressHandler} />
@@ -169,7 +176,7 @@ const ModalPrices: React.FC<ModalPricesProps> = ({
 }
 
 const styles = StyleSheet.create({
-    viewImg: {
+    viewLottie: {
         // position: 'absolute',
         width: '100%',
         height: '30%',
