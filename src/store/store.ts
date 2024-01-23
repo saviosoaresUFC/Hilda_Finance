@@ -24,6 +24,7 @@ export const useStore = create(
                 set(
                     produce(state => {
                         state.ListaVendas.push(venda);  // Adiciona a venda à lista de vendas
+                        console.log('Added to ListaVendas:', state.ListaVendas);
                     }),
                 ),
             addToDespesas: (despesa: any) =>    // Adiciona uma despesa à lista de despesas
@@ -89,16 +90,18 @@ export const useStore = create(
                         }
                     }),
                 ),
-            removeFromVendas: (venda: any) =>  // Remove uma venda da lista de vendas
+            removeFromVendas: (venda: any) =>
                 set(
-                    produce(state => {
-                        for (let i = 0; i < state.ListaVendas.length; i++) {   // Percorre a lista de vendas
-                            if (state.ListaVendas[i].id == venda.id && state.ListaVendas[i].date == venda.date) {   // Verifica se a venda é a mesma que a venda a ser removida
-                                state.ListaVendas.splice(i, 1);    // Remove a venda da lista de vendas
-                                break;  // Para o loop
+                    produce((state) => {
+                        let removed = false;
+                        state.ListaVendas = state.ListaVendas.filter((v: any) => {
+                            if (!removed && v.id === venda.id && v.date === venda.date && v.product === venda.product) {
+                                removed = true;
+                                return false; // Exclude the first matching item
                             }
-                        }
-                    }),
+                            return true;
+                        });
+                    })
                 ),
             removeFromDespesas: (despesa: any) =>  // Remove uma despesa da lista de despesas
                 set(
