@@ -9,6 +9,7 @@ import { Ionicons } from '@expo/vector-icons'
 import { COLORS, ICONS } from '../theme/theme'
 import { useStore } from '../store/store'
 import ModalConfirm from '../components/ModalConfirm'
+import LottieView from 'lottie-react-native';
 
 
 
@@ -116,9 +117,11 @@ const Despesa = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.viewImg}>
-        <Image
-          source={ICONS.street_shop}
+        <LottieView
           style={styles.img}
+          source={require('../../img/LottieExpenseEmpty.json')}
+          autoPlay
+          loop
         />
       </View>
       {modalVisible && <ModalConfirm
