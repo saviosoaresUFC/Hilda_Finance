@@ -91,7 +91,7 @@ const GraficLM = ({navigationEdition}) => {
                 <ModalConfirm modal={modal} setModal={setModal}
                     cleanListaVendas={() => ({})}
                     cleanListaDespesas={() => ({})}
-                    text={"Voce deseja editar algum produto?"}
+                    text={"Você tem certeza que deseja apagar algum produto?"}
                     apagar={null}
                     navigation={navigationEdition}
                 />
