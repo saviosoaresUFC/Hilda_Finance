@@ -29,15 +29,16 @@ const Relatorio = ({ navigation }) => {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={styles.container}>
-      <View style={[styles.headerBar, {height: ListaVendas.length === 0 && '7.7%'}]}>
+      <View style={
+        { height: ListaVendas.length === 0 ? '7.7%' : '5.6%' }
+      }>
         <HeaderBar avaliableKey={avaliableKey} />
       </View>
       <View style={styles.title}>
         <Text style={styles.text}>Relatório Venda/Despesa</Text>
       </View>
-      {/* se a ListaVendas tiver vazio, exiba um Lottie */}
-      {ListaVendas.length === 0 ? (
-        <View style={{ alignItems: 'center', justifyContent: 'center'}}>
+      {ListaVendas.length === 0 && ListaDespesas.length === 0 ? (
+        <View style={{ alignItems: 'center', justifyContent: 'center' }}>
           <LottieView
             source={require('../../img/LottieGraph3.json')}
             autoPlay
@@ -48,6 +49,7 @@ const Relatorio = ({ navigation }) => {
       ) : (
         <TableVendaDespesa />
       )}
+      {/* <TableVendaDespesa /> */}
       <View style={styles.title}>
         <Text style={styles.text}>Vendas Mensais</Text>
       </View>
@@ -65,12 +67,15 @@ const Relatorio = ({ navigation }) => {
           <GraficVM />
         </View>
       )}
+      {/* <View style={styles.graficVM}>
+        <GraficVM />
+      </View> */}
 
       <View style={[styles.title, { top: '1%' }]}>
         <Text style={styles.text}>Lucros Mensais</Text>
       </View>
-      {ListaVendas.length === 0 ? (
-        <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: '70%'}}>
+      {ListaVendas.length === 0  && ListaDespesas.length === 0 ? (
+        <View style={{ alignItems: 'center', justifyContent: 'center', marginBottom: '70%' }}>
           <LottieView
             source={require('../../img/LottieGraph.json')}
             autoPlay
@@ -83,6 +88,9 @@ const Relatorio = ({ navigation }) => {
           <GraficLM navigationEdition={navigationEdition} />
         </View>
       )}
+      {/* <View style={styles.graficLM}>
+        <GraficLM navigationEdition={navigationEdition} />
+      </View> */}
 
     </ScrollView>
   );
@@ -91,10 +99,9 @@ const Relatorio = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.gray,
-    marginBottom: '-30%',
   },
   headerBar: {
-    height: '5.6%',
+    height: '7%',
   },
   title: {
     justifyContent: 'center',
@@ -119,6 +126,7 @@ const styles = StyleSheet.create({
     height: '100%',
     padding: '4%',
     top: '0.5%',
+    // marginBottom: '50%',
   },
   titleGrafic: {
     width: '100%',
