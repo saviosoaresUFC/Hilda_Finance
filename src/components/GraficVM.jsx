@@ -148,9 +148,9 @@ const GraficVM = () => {
                 <YAxis
                     style={styles.yAxis}
                     data={dataVM.map((item) => item.SkewerSimple + item.SkewerComplete + item.Hamburguer + item.Food + item.Drink)}
-                    contentInset={{ top: 4, bottom: 8 }}
+                    contentInset={{ top: 8, bottom: 8 }}
                     svg={{
-                        fontSize: 10,
+                        fontSize: 11,
                         fill: 'black',
                         stroke: 'black',
                         strokeWidth: 0.2,
@@ -175,11 +175,12 @@ const styles = StyleSheet.create({
     },
     yAxis: {
         position: 'absolute', 
-        top: '-1%', 
-        height: '94%', 
+        bottom: '1%',
+        height: '100%', 
         left: '-3.5%',
-        // backgroundColor: COLORS.orange,
-        marginBottom: '4%',
+        marginBottom: '0%',
+        // backgroundColor: 'white',
+        // paddingTop: '50%',
     },
 })
 
