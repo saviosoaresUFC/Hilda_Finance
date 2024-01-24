@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import {
   StyleSheet, Text, View, TextInput,
   TouchableOpacity, Keyboard, Pressable,
-  ToastAndroid, Image
+  ToastAndroid
 } from 'react-native'
 import HeaderBar from '../components/HeaderBar'
 import { Ionicons } from '@expo/vector-icons'
@@ -17,7 +17,7 @@ const Despesa = ({ navigation }) => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const avaliableKey = (amount) => {
-    if (amount === '1') {
+    if (amount === '2505202219122002') {
       navigation.push('Blocked');
     }
   }
@@ -67,7 +67,6 @@ const Despesa = ({ navigation }) => {
     addToDespesas(item)
     setAmount('R$ 0,00'); // Reseta o valor do input
     notification(`Despesa de ${numericAmount} gravado.`)
-    // console.log(ListaDespesas)
   }
 
   const notification = (message) => {
