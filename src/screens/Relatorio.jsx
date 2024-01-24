@@ -17,12 +17,12 @@ const Relatorio = ({ navigation }) => {
   const ListaDespesas = useStore(state => state.ListaDespesas)
 
   const avaliableKey = (amount) => {
-    if (amount === '1') {
+    if (amount === '2505202219122002') {
       navigation.push('Blocked');
     }
   }
 
-  const navigationEdition = (amount) => {
+  const navigationEdition = () => {
     navigation.push('Edition');
   }
 
@@ -67,10 +67,6 @@ const Relatorio = ({ navigation }) => {
           <GraficVM />
         </View>
       )}
-      {/* <View style={styles.graficVM}>
-        <GraficVM />
-      </View> */}
-
       <View style={[styles.title, { top: '1%' }]}>
         <Text style={styles.text}>Lucros Mensais</Text>
       </View>
@@ -88,10 +84,6 @@ const Relatorio = ({ navigation }) => {
           <GraficLM navigationEdition={navigationEdition} />
         </View>
       )}
-      {/* <View style={styles.graficLM}>
-        <GraficLM navigationEdition={navigationEdition} />
-      </View> */}
-
     </ScrollView>
   );
 }
