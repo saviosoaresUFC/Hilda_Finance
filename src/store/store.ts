@@ -24,7 +24,6 @@ export const useStore = create(
                 set(
                     produce(state => {
                         state.ListaVendas.push(venda);  // Adiciona a venda à lista de vendas
-                        console.log('Added to ListaVendas:', state.ListaVendas);
                     }),
                 ),
             addToDespesas: (despesa: any) =>    // Adiciona uma despesa à lista de despesas
@@ -49,9 +48,6 @@ export const useStore = create(
                             if (!isNaN(parseFloat(state.CartList[i].price))) { // Certifica que o preço é um número antes de adicionar
                                 tempprice = parseFloat(state.CartList[i].price);    // Adiciona o preço do item
                             }
-                            // else {
-                            //     console.error(`Preço para o item no índice ${i} não é um número válido`);
-                            // }
                             state.CartList[i].ItemPrice = tempprice.toFixed(2).toString();  // Adiciona o preço do item
                             totalprice = totalprice + tempprice;    // Adiciona o preço do item ao preço total
                         }
