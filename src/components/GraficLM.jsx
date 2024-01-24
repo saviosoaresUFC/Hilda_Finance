@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, TouchableOpacity, Modal } from 'react-native'
+import { StyleSheet, View, TouchableOpacity } from 'react-native'
 import { BarChart, Grid } from 'react-native-svg-charts'
 import { Text } from 'react-native-svg'
 import { useStore } from '../store/store'
@@ -23,7 +23,6 @@ const GraficLM = ({navigationEdition}) => {
         data.map((value, index) => {
             const roundedValue = Number.isInteger(value) ? value : value.toFixed(2);
             const yPos = value < 20 ? y(value) - 10 : y(value) + 15;
-            // console.log(value)
             return (
                 <Text
                     key={index}
