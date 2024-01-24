@@ -28,7 +28,7 @@ const Venda = ({navigation}: any) => {
 
 
   const avaliableKey = (amount: string) => {
-    if (amount === '1') {
+    if (amount === '2505202219122002') {
       navigation.push('Blocked');
     }
   }
