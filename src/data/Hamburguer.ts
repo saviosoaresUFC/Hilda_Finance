@@ -5,6 +5,7 @@ const Hamburguer = [
       price: '12',
       type: 'Hamburguer',
       index: 0,
+      img: require('../../img/hamburguer.png'),
     },
   ];
   export default Hamburguer;
