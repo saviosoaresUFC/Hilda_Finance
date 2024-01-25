@@ -4,7 +4,8 @@ const SkewerSimples = [
       name: 'Espeto de Carne(S)',
       price: '14',
       type: 'SkewerSimple',
-      index: 0
+      index: 0,
+      img: require('../../img/skewer-simple.png'),
     },
     {
       id: 'SS2',
@@ -12,6 +13,7 @@ const SkewerSimples = [
       price: '14',
       type: 'SkewerSimple',
       index: 1,
+      img: require('../../img/skewer-simple.png'),
     },
     {
       id: 'SS3',
@@ -19,6 +21,7 @@ const SkewerSimples = [
       price: '14',
       type: 'SkewerSimple',
       index: 2,
+      img: require('../../img/skewer-simple.png'),
     },
     {
       id: 'SS4',
@@ -26,6 +29,7 @@ const SkewerSimples = [
       price: '18',
       type: 'SkewerSimple',
       index: 3,
+      img: require('../../img/skewer-simple.png'),
     },
   ];
   export default SkewerSimples;
