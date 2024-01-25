@@ -5,6 +5,7 @@ const SkewerComplete = [
       price: '18',
       type: 'SkewerComplete',
       index: 0,
+      img: require('../../img/skewer.png'),
     },
     {
       id: 'SC2',
@@ -12,6 +13,7 @@ const SkewerComplete = [
       price: '18',
       type: 'SkewerComplete',
       index: 1,
+      img: require('../../img/skewer.png'),
     },
     {
       id: 'SC3',
@@ -19,6 +21,7 @@ const SkewerComplete = [
       price: '18',
       type: 'SkewerComplete',
       index: 2,
+      img: require('../../img/skewer.png'),
     },
     {
       id: 'SC4',
@@ -26,6 +29,7 @@ const SkewerComplete = [
       price: '25',
       type: 'SkewerComplete',
       index: 3,
+      img: require('../../img/skewer.png'),
     },
   ];
   export default SkewerComplete;
