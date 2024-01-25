@@ -5,6 +5,7 @@ const Food = [
       price: '12',
       type: 'Food',
       index: 0,
+      img: require('../../img/food.png'),
     },
     {
       id: 'F2',
@@ -12,6 +13,7 @@ const Food = [
       price: '15',
       type: 'Food',
       index: 1,
+      img: require('../../img/food.png'),
     },
   ];
   export default Food;
